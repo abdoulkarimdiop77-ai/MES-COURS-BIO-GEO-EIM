@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestion des Cours — EIM</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0F6E56">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;background:#f5f5f0;color:#1a1a1a;min-height:100vh}
+header{background:#0F6E56;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+header h1{font-size:16px;font-weight:700}
+header .hright{display:flex;align-items:center;gap:10px}
+#notif-btn{padding:6px 12px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);border-radius:20px;color:#fff;font-size:12px;cursor:pointer}
+#notif-btn:hover{background:rgba(255,255,255,0.3)}
+.nav{display:flex;gap:0;background:#fff;border-bottom:1px solid #e5e5e0;overflow-x:auto}
+.nav button{padding:10px 14px;border:none;background:transparent;cursor:pointer;font-size:12px;color:#666;border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0}
+.nav button.active{color:#0F6E56;border-bottom-color:#0F6E56;font-weight:600}
+.nav button:hover:not(.active){background:#f5f5f0}
+.main{padding:16px;max-width:1100px;margin:0 auto}
+.card{background:#fff;border:1px solid #e5e5e0;border-radius:10px;padding:14px 18px;margin-bottom:12px}
+.card-title{font-size:14px;font-weight:600;margin-bottom:12px}
+.section{display:none}.section.active{display:block}
+.two-col{display:grid;grid-template-columns:300px 1fr;gap:12px}
+.two-eq{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.form-group{margin-bottom:9px}
+label{font-size:11px;color:#666;display:block;margin-bottom:3px;font-weight:500}
+input,select,textarea{width:100%;padding:7px 9px;border:1px solid #ddd;border-radius:7px;font-size:13px;background:#fafafa;color:#1a1a1a;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#0F6E56;background:#fff}
+textarea{resize:vertical;min-height:55px}
+.btn{padding:7px 14px;border-radius:7px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:13px;color:#333;font-weight:500}
+.btn:hover{background:#f0f0eb}
+.btn-primary{background:#0F6E56;color:#fff;border-color:#0F6E56}
+.btn-primary:hover{background:#085041}
+.btn-danger{color:#c0392b;border-color:transparent;background:transparent;padding:3px 8px;font-size:12px}
+.btn-sm{padding:4px 9px;font-size:12px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.stat{background:#E1F5EE;border-radius:9px;padding:12px;text-align:center}
+.stat-val{font-size:24px;font-weight:700;color:#0F6E56}
+.stat-lbl{font-size:11px;color:#0F6E56;opacity:.8;margin-top:2px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:7px 9px;border-bottom:1px solid #e5e5e0;font-weight:600;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px}
+td{padding:7px 9px;border-bottom:1px solid #f0f0eb}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf8}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-bio{background:#E1F5EE;color:#085041}
+.badge-geo{background:#FAEEDA;color:#633806}
+.badge-stat{background:#f0f0eb;color:#555;font-size:10px;padding:1px 7px;border-radius:20px}
+.empty{text-align:center;padding:24px;color:#bbb;font-size:13px}
+.note-pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:600}
+/* EDT */
+.legend{display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#666}
+.leg-dot{width:10px;height:10px;border-radius:50%}
+.grid-wrap{overflow-x:auto}
+table.edt{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+table.edt th{background:#f5f5f0;padding:7px 5px;border:1px solid #e5e5e0;font-weight:600;font-size:11px;text-align:center;color:#666;text-transform:uppercase}
+table.edt td{border:1px solid #e5e5e0;padding:3px;vertical-align:top;height:52px}
+table.edt td.heure{background:#f5f5f0;text-align:center;font-size:11px;color:#888;font-weight:600;width:66px}
+.slot{border-radius:6px;padding:4px 6px;font-size:11px;line-height:1.35;position:relative}
+.slot-bio{background:#E1F5EE;color:#085041}
+.slot-geo{background:#FAEEDA;color:#633806}
+.del-btn{position:absolute;top:2px;right:3px;font-size:10px;cursor:pointer;color:inherit;opacity:.5;border:none;background:none;padding:0}
+.del-btn:hover{opacity:1}
+.slot-empty{display:block;min-height:44px}
+/* Alertes */
+.alert-box{border-radius:9px;padding:12px 14px;margin-bottom:10px;font-size:13px}
+.alert-info{background:#E6F1FB;color:#0C447C;border:1px solid #B5D4F4}
+.alert-success{background:#E1F5EE;color:#085041;border:1px solid #9FE1CB}
+.alert-warn{background:#FAEEDA;color:#633806;border:1px solid #FAC775}
+.toast{position:fixed;bottom:20px;right:20px;background:#0F6E56;color:#fff;padding:12px 18px;border-radius:9px;font-size:13px;font-weight:500;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+@media(max-width:600px){
+  .two-col{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .three-col{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<header>
+  <h1>📚 Gestion des Cours — EIM</h1>
+  <div class="hright">
+    <span style="font-size:11px;opacity:.7" id="date-now"></span>
+    <button id="notif-btn" onclick="activerNotifs()">🔔 Activer les alertes</button>
+  </div>
+</header>
+
+<nav class="nav">
+  <button class="active" onclick="showTab('accueil')">🏠 Accueil</button>
+  <button onclick="showTab('classes')">👥 Classes</button>
+  <button onclick="showTab('cours')">📖 Cours</button>
+  <button onclick="showTab('notes')">📝 Notes</button>
+  <button onclick="showTab('ressources')">📁 Ressources</button>
+  <button onclick="showTab('edt')">🗓️ Emploi du temps</button>
+  <button onclick="showTab('alertes')">🔔 Alertes</button>
+</nav>
+
+<div class="main">
+
+<!-- ACCUEIL -->
+<div id="accueil" class="section active">
+  <div class="stats">
+    <div class="stat"><div class="stat-val" id="s-classes">0</div><div class="stat-lbl">Classes</div></div>
+    <div class="stat"><div class="stat-val" id="s-eleves">0</div><div class="stat-lbl">Élèves</div></div>
+    <div class="stat"><div class="stat-val" id="s-cours">0</div><div class="stat-lbl">Chapitres</div></div>
+    <div class="stat"><div class="stat-val" id="s-ressources">0</div><div class="stat-lbl">Ressources</div></div>
+  </div>
+  <div id="rappel-demain"></div>
+  <div class="two-eq">
+    <div class="card">
+      <div class="card-title">Cours aujourd'hui</div>
+      <div id="today-edt"><div class="empty">Aucun cours planifié aujourd'hui</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Dernières notes</div>
+      <div id="recent-notes"><div class="empty">Aucune note enregistrée</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Chapitres récents</div>
+    <div id="recent-cours"><div class="empty">Aucun chapitre</div></div>
+  </div>
+</div>
+
+<!-- CLASSES -->
+<div id="classes" class="section">
+  <div class="two-col">
+    <div>
+      <div class="card">
+        <div class="card-title">Nouvelle classe</div>
+        <div class="form-group"><label>Nom</label><input id="cl-nom" placeholder="11ème A"></div>
+        <div class="two-eq">
+          <div class="form-group"><label>Niveau</label><select id="cl-niveau"><option>11ème</option><option>12ème</option></select></div>
+          <div class="form-group"><label>Effectif</label><input id="cl-eff" type="number" placeholder="35"></div>
+        </div>
+        <button class="btn btn-primary" onclick="addClasse()">+ Ajouter</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Nouvel élève</div>
+        <div class="form-group"><label>Nom complet</label><input id="el-nom" placeholder="Fatoumata Diallo"></div>
+        <div class="form-group"><label>Classe</label><select id="el-classe"><option value="">-- Choisir --</option></select></div>
+        <div class="form-group"><label>N° (optionnel)</label><input id="el-num" placeholder="001"></div>
+        <button class="btn btn-primary" onclick="addEleve()">+ Ajouter</button>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-title">Mes classes</div>
+        <div id="liste-classes"><div class="empty">Aucune classe</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Mes élèves</div>
+        <div style="margin-bottom:8px"><select id="filter-classe-el" onchange="renderEleves()" style="width:200px"><option value="">Toutes les classes</option></select></div>
+        <div id="liste-eleves"><div class="empty">Aucun élève</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COURS -->
+<div id="cours" class="section">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Nouveau chapitre</div>
+      <div class="form-group"><label>Titre</label><input id="co-titre" placeholder="La cellule vivante"></div>
+      <div class="two-eq">
+        <div class="form-group"><label>Matière</label><select id="co-mat"><option>Biologie</option><option>Géologie</option></select></div>
+        <div class="form-group"><label>Classe</label><select id="co-classe"><option value="">-- Choisir --</option></select></div>
+      </div>
+      <div class="two-eq">
+        <div class="form-group"><label>Date début</label><input id="co-debut" type="date"></div>
+        <div class="form-group"><label>Statut</label><select id="co-statut"><option>En cours</option><option>Terminé</option><option>Planifié</option></select></div>
+      </div>
+      <div class="form-group"><label>Objectifs</label><textarea id="co-obj" placeholder="L'élève doit être capable de..."></textarea></div>
+      <button class="btn btn-primary" onclick="addCours()">+ Ajouter</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Mes chapitres</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <select id="filter-mat-cours" onchange="renderCours()" style="flex:1"><option value="">Toutes matières</option><option>Biologie</option><option>Géologie</option></select>
+        <select id="filter-classe-cours" onchange="renderCours()" style="flex:1"><option value="">Toutes classes</option></select>
+        <select id="filter-statut-cours" onchange="renderCours()" style="flex:1"><option value="">Tous statuts</option><option>En cours</option><option>Terminé</option><option>Planifié</option></select>
+      </div>
+      <div id="liste-cours"><div class="empty">Aucun chapitre</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTES -->
+<div id="notes" class="section">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Enregistrer une note</div>
+      <div class="form-group"><label>Titre évaluation</label><input id="no-titre" placeholder="Devoir 1 — Biologie"></div>
+      <div class="two-eq">
+        <div class="form-group"><label>Matière</label><select id="no-mat"><option>Biologie</option><option>Géologie</option></select></div>
+        <div class="form-group"><label>Classe</label><select id="no-classe" onchange="filterElevesNote()"><option value="">-- Choisir --</option></select></div>
+      </div>
+      <div class="two-eq">
+        <div class="form-group"><label>Date</label><input id="no-date" type="date"></div>
+        <div class="form-group"><label>Barème</label><input id="no-bareme" type="number" value="20" min="1"></div>
+      </div>
+      <div class="form-group"><label>Élève</label><select id="no-eleve"><option value="">-- Choisir --</option></select></div>
+      <div class="form-group"><label>Note</label><input id="no-note" type="number" step="0.25" placeholder="15"></div>
+      <button class="btn btn-primary" onclick="addNote()">+ Enregistrer</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Notes enregistrées</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <select id="filter-classe-note" onchange="renderNotes()" style="flex:1"><option value="">Toutes classes</option></select>
+        <select id="filter-mat-note" onchange="renderNotes()" style="flex:1"><option value="">Toutes matières</option><option>Biologie</option><option>Géologie</option></select>
+      </div>
+      <div id="moy-display" style="margin-bottom:8px"></div>
+      <div id="liste-notes"><div class="empty">Aucune note</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- RESSOURCES -->
+<div id="ressources" class="section">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Nouvelle ressource</div>
+      <div class="form-group"><label>Titre</label><input id="re-titre" placeholder="Schéma de la mitose"></div>
+      <div class="two-eq">
+        <div class="form-group"><label>Type</label><select id="re-type"><option>Cours</option><option>Exercice</option><option>Corrigé</option><option>Évaluation</option><option>Schéma</option><option>Document</option></select></div>
+        <div class="form-group"><label>Matière</label><select id="re-mat"><option>Biologie</option><option>Géologie</option></select></div>
+      </div>
+      <div class="form-group"><label>Classe</label><select id="re-classe"><option value="">Toutes</option></select></div>
+      <div class="form-group"><label>Description / Lien</label><textarea id="re-desc" placeholder="Description ou lien vers le fichier..."></textarea></div>
+      <button class="btn btn-primary" onclick="addRessource()">+ Ajouter</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Mes ressources</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <select id="filter-mat-res" onchange="renderRessources()" style="flex:1"><option value="">Toutes matières</option><option>Biologie</option><option>Géologie</option></select>
+        <select id="filter-type-res" onchange="renderRessources()" style="flex:1"><option value="">Tous types</option><option>Cours</option><option>Exercice</option><option>Corrigé</option><option>Évaluation</option><option>Schéma</option><option>Document</option></select>
+      </div>
+      <div id="liste-ressources"><div class="empty">Aucune ressource</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- EMPLOI DU TEMPS -->
+<div id="edt" class="section">
+  <div class="card">
+    <div class="card-title">Ajouter un créneau</div>
+    <div class="three-col" style="margin-bottom:8px">
+      <div class="form-group"><label>Jour</label>
+        <select id="et-jour"><option>Lundi</option><option>Mardi</option><option>Mercredi</option><option>Jeudi</option><option>Vendredi</option><option>Samedi</option></select>
+      </div>
+      <div class="form-group"><label>Heure début</label>
+        <select id="et-hdeb"><option>07h00</option><option>08h00</option><option>09h00</option><option>10h00</option><option>11h00</option><option>12h00</option><option>13h00</option><option>14h00</option><option>15h00</option><option>16h00</option><option>17h00</option></select>
+      </div>
+      <div class="form-group"><label>Heure fin</label>
+        <select id="et-hfin"><option>08h00</option><option>09h00</option><option>10h00</option><option>11h00</option><option>12h00</option><option>13h00</option><option>14h00</option><option>15h00</option><option>16h00</option><option>17h00</option><option>18h00</option></select>
+      </div>
+    </div>
+    <div class="three-col">
+      <div class="form-group"><label>Matière</label><select id="et-mat"><option>Biologie</option><option>Géologie</option></select></div>
+      <div class="form-group"><label>Classe</label><input id="et-classe" placeholder="11ème A"></div>
+      <div class="form-group"><label>Leçon / Chapitre</label><input id="et-lecon" placeholder="La cellule vivante"></div>
+    </div>
+    <div class="form-group" style="max-width:200px"><label>Salle</label><input id="et-salle" placeholder="Salle 12"></div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="btn btn-primary" onclick="addSlot()">+ Ajouter le créneau</button>
+      <span id="et-err" style="font-size:12px;color:#c0392b"></span>
+      <button class="btn btn-danger" onclick="clearEdt()" style="margin-left:auto">🗑 Effacer tout l'EDT</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#1D9E75"></div>Biologie</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#BA7517"></div>Géologie</div>
+    </div>
+    <div class="grid-wrap">
+      <table class="edt">
+        <thead><tr><th style="width:66px">Heure</th><th>Lundi</th><th>Mardi</th><th>Mercredi</th><th>Jeudi</th><th>Vendredi</th><th>Samedi</th></tr></thead>
+        <tbody id="edt-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ALERTES -->
+<div id="alertes" class="section">
+  <div class="card">
+    <div class="card-title">🔔 Système d'alertes de rappel</div>
+    <div class="alert-info alert-box" style="margin-bottom:12px">
+      Les alertes te rappellent <strong>la veille de chaque cours</strong> la classe, la matière et la leçon prévue. Elles s'affichent ici et dans le navigateur si tu les actives.
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:13px;font-weight:600;color:#333;margin-bottom:6px;display:block">Email de rappel</label>
+      <div style="display:flex;gap:8px;max-width:400px">
+        <input id="email-rappel" type="email" value="abdoulkarimdiop77@gmail.com" placeholder="ton@email.com">
+        <button class="btn btn-primary" onclick="sauvegarderEmail()">Sauvegarder</button>
+      </div>
+      <p style="font-size:11px;color:#999;margin-top:4px">⚠️ L'envoi d'email automatique nécessite le service EmailJS (gratuit) — voir instructions ci-dessous.</p>
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:13px;font-weight:600;color:#333;margin-bottom:6px;display:block">Notifications navigateur</label>
+      <div id="notif-status" class="alert-warn alert-box" style="margin-bottom:8px">Notifications non activées</div>
+      <button class="btn btn-primary" onclick="activerNotifs()">🔔 Activer les notifications</button>
+    </div>
+    <div style="margin-bottom:14px">
+      <button class="btn btn-primary" onclick="verifierRappels()">▶ Vérifier les rappels maintenant</button>
+      <span style="font-size:12px;color:#999;margin-left:10px">Simule la vérification quotidienne</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 Cours de demain (rappels prévus)</div>
+    <div id="demain-liste"><div class="empty">Aucun cours prévu pour demain</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📧 Configuration EmailJS (envoi email gratuit)</div>
+    <div class="alert-warn alert-box" style="margin-bottom:12px">Suis ces étapes une seule fois pour activer l'envoi automatique d'emails.</div>
+    <ol style="font-size:13px;color:#555;line-height:2;padding-left:18px">
+      <li>Va sur <a href="https://www.emailjs.com" target="_blank" style="color:#0F6E56;font-weight:600">emailjs.com</a> et crée un compte gratuit</li>
+      <li>Crée un <strong>Email Service</strong> (connecte ton Gmail : abdoulkarimdiop77@gmail.com)</li>
+      <li>Crée un <strong>Email Template</strong> avec ce contenu :<br>
+        <div style="background:#f5f5f0;border-radius:7px;padding:10px;margin:6px 0;font-size:12px;font-family:monospace;color:#333">
+          Objet : 🔔 Rappel cours demain — {{classe}}<br><br>
+          Bonjour Karim,<br><br>
+          Tu as cours demain :<br>
+          📚 Matière : {{matiere}}<br>
+          🏫 Classe : {{classe}}<br>
+          📖 Leçon : {{lecon}}<br>
+          🕐 Horaire : {{horaire}}<br><br>
+          Bonne préparation !
+        </div>
+      </li>
+      <li>Copie ton <strong>Service ID</strong>, <strong>Template ID</strong> et <strong>Public Key</strong></li>
+      <li>Colle-les ci-dessous et sauvegarde :</li>
+    </ol>
+    <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+      <div class="form-group"><label>Service ID</label><input id="ejs-service" placeholder="service_xxxxxx"></div>
+      <div class="form-group"><label>Template ID</label><input id="ejs-template" placeholder="template_xxxxxx"></div>
+      <div class="form-group"><label>Public Key</label><input id="ejs-pubkey" placeholder="xxxxxxxxxxxxxxx"></div>
+    </div>
+    <button class="btn btn-primary" onclick="sauvegarderEmailJS()">💾 Sauvegarder la configuration EmailJS</button>
+    <div id="ejs-status" style="margin-top:8px;font-size:12px;color:#0F6E56"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📜 Historique des rappels envoyés</div>
+    <div id="historique-rappels"><div class="empty">Aucun rappel envoyé</div></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+const JOURS=['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+const JOURS_FR=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+const HEURES=['07h00','08h00','09h00','10h00','11h00','12h00','13h00','14h00','15h00','16h00','17h00','18h00'];
+
+let db={classes:[],eleves:[],cours:[],notes:[],ressources:[],slots:[],rappels:[]};
+let nid={cl:1,el:1,co:1,no:1,re:1,sl:1};
+let cfg={email:'abdoulkarimdiop77@gmail.com',ejsService:'',ejsTemplate:'',ejsPubKey:''};
+
+function save(){try{localStorage.setItem('eim_db',JSON.stringify({db,nid,cfg}));}catch(e){}}
+function load(){
+  try{
+    const d=localStorage.getItem('eim_db');
+    if(d){const p=JSON.parse(d);db=p.db||db;nid=p.nid||nid;cfg=p.cfg||cfg;}
+    if(cfg.email)document.getElementById('email-rappel').value=cfg.email;
+    if(cfg.ejsService)document.getElementById('ejs-service').value=cfg.ejsService;
+    if(cfg.ejsTemplate)document.getElementById('ejs-template').value=cfg.ejsTemplate;
+    if(cfg.ejsPubKey)document.getElementById('ejs-pubkey').value=cfg.ejsPubKey;
+    if(cfg.ejsPubKey){try{emailjs.init(cfg.ejsPubKey);}catch(e){}}
+  }catch(e){}
+}
+
+function toast(msg,dur=3000){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+function showTab(t){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(t).classList.add('active');
+  const tabs=['accueil','classes','cours','notes','ressources','edt','alertes'];
+  document.querySelectorAll('.nav button')[tabs.indexOf(t)].classList.add('active');
+  if(t==='accueil')updateAccueil();
+  if(t==='edt')renderEdt();
+  if(t==='alertes'){renderDemain();renderHistorique();updateNotifStatus();}
+}
+
+function getClasseNom(id){const c=db.classes.find(x=>x.id==id);return c?c.nom:'—';}
+function getEleveNom(id){const e=db.eleves.find(x=>x.id==id);return e?e.nom:'—';}
+function noteStyle(n,b){const p=n/b;if(p>=0.7)return 'background:#E1F5EE;color:#085041';if(p>=0.5)return 'background:#FAEEDA;color:#633806';return 'background:#FCEBEB;color:#791F1F';}
+
+function refreshAllSelects(){
+  const opts=db.classes.map(c=>`<option value="${c.id}">${c.nom}</option>`).join('');
+  ['el-classe','co-classe','no-classe','filter-classe-note','filter-classe-el','filter-classe-cours'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    const first=el.options[0].cloneNode(true);el.innerHTML='';el.appendChild(first);
+    el.insertAdjacentHTML('beforeend',opts);
+  });
+  ['re-classe'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    const first=el.options[0].cloneNode(true);el.innerHTML='';el.appendChild(first);
+    el.insertAdjacentHTML('beforeend',opts);
+  });
+  filterElevesNote();
+}
+
+function filterElevesNote(){
+  const cid=document.getElementById('no-classe').value;
+  const arr=cid?db.eleves.filter(e=>e.classeId==cid):db.eleves;
+  const sel=document.getElementById('no-eleve');
+  sel.innerHTML='<option value="">-- Choisir --</option>'+arr.map(e=>`<option value="${e.id}">${e.nom}</option>`).join('');
+}
+
+/* CLASSES */
+function addClasse(){
+  const nom=document.getElementById('cl-nom').value.trim();if(!nom)return;
+  db.classes.push({id:nid.cl++,nom,niveau:document.getElementById('cl-niveau').value,effectif:document.getElementById('cl-eff').value||'?'});
+  document.getElementById('cl-nom').value='';document.getElementById('cl-eff').value='';
+  save();refreshAllSelects();renderClasses();updateStats();toast('Classe ajoutée ✓');
+}
+function delClasse(id){if(!confirm('Supprimer cette classe ?'))return;db.classes=db.classes.filter(x=>x.id!==id);db.eleves=db.eleves.filter(x=>x.classeId!==id);save();refreshAllSelects();renderClasses();renderEleves();updateStats();}
+function renderClasses(){
+  const el=document.getElementById('liste-classes');
+  if(!db.classes.length){el.innerHTML='<div class="empty">Aucune classe</div>';return;}
+  el.innerHTML='<table><thead><tr><th>Classe</th><th>Niveau</th><th>Effectif</th><th>Élèves</th><th></th></tr></thead><tbody>'+
+    db.classes.map(c=>`<tr><td><strong>${c.nom}</strong></td><td>${c.niveau}</td><td>${c.effectif}</td><td>${db.eleves.filter(e=>e.classeId===c.id).length}</td><td><button class="btn btn-danger btn-sm" onclick="delClasse(${c.id})">✕</button></td></tr>`).join('')+'</tbody></table>';
+}
+
+/* ÉLÈVES */
+function addEleve(){
+  const nom=document.getElementById('el-nom').value.trim();
+  const classeId=parseInt(document.getElementById('el-classe').value);
+  if(!nom||!classeId)return;
+  db.eleves.push({id:nid.el++,nom,classeId,num:document.getElementById('el-num').value.trim()});
+  document.getElementById('el-nom').value='';document.getElementById('el-num').value='';
+  save();refreshAllSelects();renderEleves();updateStats();toast('Élève ajouté ✓');
+}
+function delEleve(id){db.eleves=db.eleves.filter(x=>x.id!==id);save();refreshAllSelects();renderEleves();updateStats();}
+function renderEleves(){
+  const el=document.getElementById('liste-eleves');
+  const fc=document.getElementById('filter-classe-el').value;
+  let arr=fc?db.eleves.filter(e=>e.classeId==fc):db.eleves;
+  if(!arr.length){el.innerHTML='<div class="empty">Aucun élève</div>';return;}
+  el.innerHTML='<table><thead><tr><th>N°</th><th>Nom</th><th>Classe</th><th></th></tr></thead><tbody>'+
+    arr.map(e=>`<tr><td style="color:#aaa;font-size:11px">${e.num||'—'}</td><td>${e.nom}</td><td>${getClasseNom(e.classeId)}</td><td><button class="btn btn-danger btn-sm" onclick="delEleve(${e.id})">✕</button></td></tr>`).join('')+'</tbody></table>';
+}
+
+/* COURS */
+function addCours(){
+  const titre=document.getElementById('co-titre').value.trim();
+  const classeId=parseInt(document.getElementById('co-classe').value);
+  if(!titre||!classeId)return;
+  db.cours.push({id:nid.co++,titre,mat:document.getElementById('co-mat').value,classeId,debut:document.getElementById('co-debut').value,statut:document.getElementById('co-statut').value,obj:document.getElementById('co-obj').value.trim()});
+  document.getElementById('co-titre').value='';document.getElementById('co-obj').value='';
+  save();renderCours();updateStats();toast('Chapitre ajouté ✓');
+}
+function delCours(id){db.cours=db.cours.filter(x=>x.id!==id);save();renderCours();updateStats();}
+function renderCours(){
+  const el=document.getElementById('liste-cours');
+  const fm=document.getElementById('filter-mat-cours').value;
+  const fc=document.getElementById('filter-classe-cours').value;
+  const fs=document.getElementById('filter-statut-cours').value;
+  let arr=db.cours;
+  if(fm)arr=arr.filter(c=>c.mat===fm);if(fc)arr=arr.filter(c=>c.classeId==fc);if(fs)arr=arr.filter(c=>c.statut===fs);
+  if(!arr.length){el.innerHTML='<div class="empty">Aucun chapitre</div>';return;}
+  el.innerHTML=arr.map(c=>`<div style="border-bottom:1px solid #f0f0eb;padding:8px 0;display:flex;justify-content:space-between;gap:8px">
+    <div>
+      <span class="badge ${c.mat==='Biologie'?'badge-bio':'badge-geo'}">${c.mat}</span>
+      <span class="badge-stat" style="margin-left:4px">${c.statut}</span>
+      <strong style="margin-left:6px">${c.titre}</strong>
+      <span style="font-size:11px;color:#aaa;margin-left:6px">${getClasseNom(c.classeId)}</span>
+      ${c.obj?`<p style="font-size:12px;color:#888;margin-top:3px">${c.obj}</p>`:''}
+    </div>
+    <button class="btn btn-danger btn-sm" onclick="delCours(${c.id})">✕</button>
+  </div>`).join('');
+}
+
+/* NOTES */
+function addNote(){
+  const titre=document.getElementById('no-titre').value.trim();
+  const classeId=parseInt(document.getElementById('no-classe').value);
+  const eleveId=parseInt(document.getElementById('no-eleve').value);
+  const note=parseFloat(document.getElementById('no-note').value);
+  if(!titre||!classeId||!eleveId||isNaN(note))return;
+  const bareme=parseFloat(document.getElementById('no-bareme').value)||20;
+  db.notes.push({id:nid.no++,titre,mat:document.getElementById('no-mat').value,classeId,eleveId,date:document.getElementById('no-date').value,bareme,note});
+  document.getElementById('no-note').value='';
+  save();renderNotes();updateStats();toast('Note enregistrée ✓');
+}
+function delNote(id){db.notes=db.notes.filter(x=>x.id!==id);save();renderNotes();updateStats();}
+function renderNotes(){
+  const el=document.getElementById('liste-notes');
+  const fc=document.getElementById('filter-classe-note').value;
+  const fm=document.getElementById('filter-mat-note').value;
+  let arr=db.notes;
+  if(fc)arr=arr.filter(n=>n.classeId==fc);if(fm)arr=arr.filter(n=>n.mat===fm);
+  const moy=document.getElementById('moy-display');
+  if(arr.length){const avg=(arr.reduce((s,n)=>s+n.note/n.bareme*20,0)/arr.length).toFixed(2);moy.innerHTML=`<span style="font-size:12px;color:#666">Moyenne : <strong style="color:#0F6E56">${avg}/20</strong> (${arr.length} note${arr.length>1?'s':''})</span>`;}
+  else moy.innerHTML='';
+  if(!arr.length){el.innerHTML='<div class="empty">Aucune note</div>';return;}
+  el.innerHTML='<table><thead><tr><th>Évaluation</th><th>Élève</th><th>Matière</th><th>Note</th><th></th></tr></thead><tbody>'+
+    arr.map(n=>`<tr><td>${n.titre}<br><span style="font-size:10px;color:#aaa">${n.date||''} · ${getClasseNom(n.classeId)}</span></td><td>${getEleveNom(n.eleveId)}</td><td><span class="badge ${n.mat==='Biologie'?'badge-bio':'badge-geo'}">${n.mat}</span></td><td><span class="note-pill" style="${noteStyle(n.note,n.bareme)}">${n.note}/${n.bareme}</span></td><td><button class="btn btn-danger btn-sm" onclick="delNote(${n.id})">✕</button></td></tr>`).join('')+'</tbody></table>';
+}
+
+/* RESSOURCES */
+function addRessource(){
+  const titre=document.getElementById('re-titre').value.trim();if(!titre)return;
+  db.ressources.push({id:nid.re++,titre,type:document.getElementById('re-type').value,mat:document.getElementById('re-mat').value,classeId:document.getElementById('re-classe').value,desc:document.getElementById('re-desc').value.trim()});
+  document.getElementById('re-titre').value='';document.getElementById('re-desc').value='';
+  save();renderRessources();updateStats();toast('Ressource ajoutée ✓');
+}
+function delRessource(id){db.ressources=db.ressources.filter(x=>x.id!==id);save();renderRessources();updateStats();}
+function renderRessources(){
+  const el=document.getElementById('liste-ressources');
+  const fm=document.getElementById('filter-mat-res').value;
+  const ft=document.getElementById('filter-type-res').value;
+  let arr=db.ressources;
+  if(fm)arr=arr.filter(r=>r.mat===fm);if(ft)arr=arr.filter(r=>r.type===ft);
+  if(!arr.length){el.innerHTML='<div class="empty">Aucune ressource</div>';return;}
+  el.innerHTML=arr.map(r=>`<div style="border-bottom:1px solid #f0f0eb;padding:8px 0;display:flex;justify-content:space-between;gap:8px">
+    <div>
+      <span class="badge ${r.mat==='Biologie'?'badge-bio':'badge-geo'}">${r.mat}</span>
+      <span class="badge-stat" style="margin-left:4px">${r.type}</span>
+      <strong style="margin-left:6px">${r.titre}</strong>
+      ${r.classeId?`<span style="font-size:11px;color:#aaa;margin-left:4px">${getClasseNom(r.classeId)}</span>`:''}
+      ${r.desc?`<p style="font-size:12px;color:#888;margin-top:3px">${r.desc}</p>`:''}
+    </div>
+    <button class="btn btn-danger btn-sm" onclick="delRessource(${r.id})">✕</button>
+  </div>`).join('');
+}
+
+/* EMPLOI DU TEMPS */
+function hIdx(h){return HEURES.indexOf(h);}
+function addSlot(){
+  const hdeb=document.getElementById('et-hdeb').value;
+  const hfin=document.getElementById('et-hfin').value;
+  const classe=document.getElementById('et-classe').value.trim();
+  const err=document.getElementById('et-err');
+  if(hIdx(hdeb)>=hIdx(hfin)){err.textContent='Heure de fin doit être après le début.';return;}
+  if(!classe){err.textContent='Indiquer la classe.';return;}
+  err.textContent='';
+  db.slots.push({id:nid.sl++,jour:document.getElementById('et-jour').value,hdeb,hfin,mat:document.getElementById('et-mat').value,classe,lecon:document.getElementById('et-lecon').value.trim(),salle:document.getElementById('et-salle').value.trim(),span:hIdx(hfin)-hIdx(hdeb)});
+  document.getElementById('et-classe').value='';document.getElementById('et-lecon').value='';document.getElementById('et-salle').value='';
+  save();renderEdt();toast('Créneau ajouté ✓');
+}
+function delSlot(id){db.slots=db.slots.filter(s=>s.id!==id);save();renderEdt();}
+function clearEdt(){if(!confirm('Effacer tout ?'))return;db.slots=[];save();renderEdt();}
+function renderEdt(){
+  const body=document.getElementById('edt-body');
+  const occ={};
+  db.slots.forEach(s=>{
+    const ji=JOURS.indexOf(s.jour),hi=hIdx(s.hdeb);
+    for(let r=hi;r<hi+s.span;r++){
+      if(!occ[r])occ[r]={};
+      occ[r][ji]=r===hi?{slot:s,first:true}:{skip:true};
+    }
+  });
+  let html='';
+  for(let r=0;r<HEURES.length-1;r++){
+    html+=`<tr><td class="heure">${HEURES[r]}<br><span style="font-size:10px;opacity:.6">→${HEURES[r+1]}</span></td>`;
+    for(let j=0;j<6;j++){
+      const cell=occ[r]?occ[r][j]:null;
+      if(cell&&cell.skip)continue;
+      if(cell&&cell.first){
+        const s=cell.slot;
+        html+=`<td rowspan="${s.span}"><div class="slot ${s.mat==='Biologie'?'slot-bio':'slot-geo'}" style="min-height:${s.span*44}px">
+          <button class="del-btn" onclick="delSlot(${s.id})">✕</button>
+          <strong>${s.mat}</strong><br>${s.classe}
+          ${s.lecon?`<br><span style="font-size:10px;opacity:.85">${s.lecon}</span>`:''}
+          ${s.salle?`<br><span style="opacity:.7">${s.salle}</span>`:''}
+        </div></td>`;
+      }else html+=`<td><span class="slot-empty"></span></td>`;
+    }
+    html+='</tr>';
+  }
+  body.innerHTML=html;
+}
+
+/* ALERTES & RAPPELS */
+function sauvegarderEmail(){
+  cfg.email=document.getElementById('email-rappel').value.trim();
+  save();toast('Email sauvegardé ✓');
+}
+
+function sauvegarderEmailJS(){
+  cfg.ejsService=document.getElementById('ejs-service').value.trim();
+  cfg.ejsTemplate=document.getElementById('ejs-template').value.trim();
+  cfg.ejsPubKey=document.getElementById('ejs-pubkey').value.trim();
+  if(cfg.ejsPubKey){try{emailjs.init(cfg.ejsPubKey);}catch(e){}}
+  save();
+  document.getElementById('ejs-status').textContent='✓ Configuration sauvegardée ! Les emails seront envoyés automatiquement.';
+  toast('Configuration EmailJS sauvegardée ✓');
+}
+
+function getCoursDemain(){
+  const demain=new Date();demain.setDate(demain.getDate()+1);
+  const jourDemain=JOURS_FR[demain.getDay()];
+  return db.slots.filter(s=>s.jour===jourDemain);
+}
+
+function renderDemain(){
+  const el=document.getElementById('demain-liste');
+  const slots=getCoursDemain();
+  if(!slots.length){el.innerHTML='<div class="empty">Aucun cours prévu pour demain</div>';return;}
+  const demain=new Date();demain.setDate(demain.getDate()+1);
+  const dateStr=demain.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  el.innerHTML=`<p style="font-size:12px;color:#888;margin-bottom:8px">Cours du ${dateStr} :</p>`+
+    slots.map(s=>`<div style="border:1px solid #e5e5e0;border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start">
+      <span class="badge ${s.mat==='Biologie'?'badge-bio':'badge-geo'}">${s.mat}</span>
+      <div>
+        <strong>${s.classe}</strong> — ${s.hdeb} à ${s.hfin}
+        ${s.lecon?`<br><span style="font-size:12px;color:#666">📖 ${s.lecon}</span>`:''}
+        ${s.salle?`<span style="font-size:11px;color:#aaa"> · ${s.salle}</span>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function renderHistorique(){
+  const el=document.getElementById('historique-rappels');
+  if(!db.rappels||!db.rappels.length){el.innerHTML='<div class="empty">Aucun rappel envoyé</div>';return;}
+  el.innerHTML='<table><thead><tr><th>Date envoi</th><th>Cours</th><th>Canal</th><th>Statut</th></tr></thead><tbody>'+
+    [...db.rappels].reverse().slice(0,20).map(r=>`<tr><td style="font-size:11px">${r.date}</td><td>${r.mat} · ${r.classe}${r.lecon?' · '+r.lecon:''}</td><td>${r.canal}</td><td style="color:${r.ok?'#0F6E56':'#c0392b'}">${r.ok?'✓ Envoyé':'✗ Échec'}</td></tr>`).join('')+'</tbody></table>';
+}
+
+async function envoyerEmail(slot){
+  if(!cfg.ejsService||!cfg.ejsTemplate||!cfg.ejsPubKey)return false;
+  const demain=new Date();demain.setDate(demain.getDate()+1);
+  const dateStr=demain.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  try{
+    await emailjs.send(cfg.ejsService,cfg.ejsTemplate,{
+      to_email:cfg.email,
+      classe:slot.classe,
+      matiere:slot.mat,
+      lecon:slot.lecon||'(non précisée)',
+      horaire:`${slot.hdeb} – ${slot.hfin}`,
+      salle:slot.salle||'',
+      date_cours:dateStr
+    });
+    return true;
+  }catch(e){console.error(e);return false;}
+}
+
+function envoyerNotifNavigateur(slot){
+  if(Notification.permission!=='granted')return false;
+  const demain=new Date();demain.setDate(demain.getDate()+1);
+  const dateStr=demain.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  new Notification(`🔔 Rappel cours demain — ${slot.classe}`,{
+    body:`${slot.mat} · ${slot.hdeb}–${slot.hfin}${slot.lecon?' · '+slot.lecon:''}`,
+    icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%230F6E56" rx="20"/><text y=".9em" font-size="80">📚</text></svg>'
+  });
+  return true;
+}
+
+async function verifierRappels(){
+  const slots=getCoursDemain();
+  if(!slots.length){toast('Aucun cours demain — pas de rappel à envoyer.');return;}
+  let nbEmail=0,nbNotif=0;
+  for(const slot of slots){
+    const dateEnvoi=new Date().toLocaleString('fr-FR');
+    const okEmail=await envoyerEmail(slot);
+    const okNotif=envoyerNotifNavigateur(slot);
+    if(okEmail)nbEmail++;
+    if(okNotif)nbNotif++;
+    if(!db.rappels)db.rappels=[];
+    if(okEmail)db.rappels.push({date:dateEnvoi,mat:slot.mat,classe:slot.classe,lecon:slot.lecon,canal:'Email',ok:true});
+    if(okNotif)db.rappels.push({date:dateEnvoi,mat:slot.mat,classe:slot.classe,lecon:slot.lecon,canal:'Navigateur',ok:true});
+    if(!okEmail&&!okNotif)db.rappels.push({date:dateEnvoi,mat:slot.mat,classe:slot.classe,lecon:slot.lecon,canal:'—',ok:false});
+  }
+  save();renderHistorique();
+  let msg=`${slots.length} rappel(s) traité(s)`;
+  if(nbEmail)msg+=` · ${nbEmail} email(s) envoyé(s)`;
+  if(nbNotif)msg+=` · ${nbNotif} notification(s)`;
+  toast(msg,4000);
+}
+
+function activerNotifs(){
+  if(!('Notification'in window)){toast('Notifications non supportées par ce navigateur.');return;}
+  Notification.requestPermission().then(p=>{
+    updateNotifStatus();
+    if(p==='granted')toast('Notifications activées ✓');
+    else toast('Notifications refusées. Autorise-les dans les paramètres du navigateur.');
+  });
+}
+
+function updateNotifStatus(){
+  const el=document.getElementById('notif-status');if(!el)return;
+  const btn=document.getElementById('notif-btn');
+  if(!('Notification'in window)){el.className='alert-box alert-warn';el.textContent='Ton navigateur ne supporte pas les notifications.';}
+  else if(Notification.permission==='granted'){
+    el.className='alert-box alert-success';el.textContent='✓ Notifications activées — tu recevras les rappels dans le navigateur.';
+    if(btn)btn.textContent='✓ Alertes activées';
+  }else if(Notification.permission==='denied'){
+    el.className='alert-box alert-warn';el.textContent='Notifications bloquées. Va dans les paramètres du navigateur pour les autoriser.';
+  }else{
+    el.className='alert-box alert-warn';el.textContent='Notifications non activées — clique sur le bouton pour les activer.';
+  }
+}
+
+/* Vérification automatique quotidienne à 20h */
+function planifierVerificationQuotidienne(){
+  const maintenant=new Date();
+  const prochaine=new Date();
+  prochaine.setHours(20,0,0,0);
+  if(prochaine<=maintenant)prochaine.setDate(prochaine.getDate()+1);
+  const delai=prochaine-maintenant;
+  setTimeout(()=>{
+    verifierRappels();
+    setInterval(verifierRappels,24*60*60*1000);
+  },delai);
+}
+
+/* ACCUEIL */
+function updateStats(){
+  document.getElementById('s-classes').textContent=db.classes.length;
+  document.getElementById('s-eleves').textContent=db.eleves.length;
+  document.getElementById('s-cours').textContent=db.cours.length;
+  document.getElementById('s-ressources').textContent=db.ressources.length;
+}
+function updateAccueil(){
+  updateStats();
+  const today=JOURS_FR[new Date().getDay()];
+  const demain=JOURS_FR[new Date(Date.now()+86400000).getDay()];
+  const todaySlots=db.slots.filter(s=>s.jour===today);
+  const demainSlots=db.slots.filter(s=>s.jour===demain);
+  const te=document.getElementById('today-edt');
+  if(!todaySlots.length)te.innerHTML=`<div class="empty">Aucun cours aujourd'hui (${today})</div>`;
+  else te.innerHTML='<table><tbody>'+todaySlots.map(s=>`<tr><td style="color:#666;font-size:12px">${s.hdeb}–${s.hfin}</td><td><span class="badge ${s.mat==='Biologie'?'badge-bio':'badge-geo'}">${s.mat}</span></td><td><strong>${s.classe}</strong></td><td style="font-size:12px;color:#666">${s.lecon||''}</td></tr>`).join('')+'</tbody></table>';
+  const rd=document.getElementById('rappel-demain');
+  if(demainSlots.length){
+    rd.innerHTML=`<div class="alert-box alert-info" style="margin-bottom:12px">🔔 <strong>Rappel :</strong> Tu as ${demainSlots.length} cours demain (${demain}) — ${demainSlots.map(s=>`${s.mat} ${s.classe}`).join(', ')}</div>`;
+  }else rd.innerHTML='';
+  const rn=document.getElementById('recent-notes');
+  if(!db.notes.length)rn.innerHTML='<div class="empty">Aucune note</div>';
+  else{const arr=[...db.notes].reverse().slice(0,4);rn.innerHTML='<table><tbody>'+arr.map(n=>`<tr><td>${n.titre}</td><td>${getEleveNom(n.eleveId)}</td><td><span class="note-pill" style="${noteStyle(n.note,n.bareme)}">${n.note}/${n.bareme}</span></td></tr>`).join('')+'</tbody></table>';}
+  const rc=document.getElementById('recent-cours');
+  if(!db.cours.length)rc.innerHTML='<div class="empty">Aucun chapitre</div>';
+  else{const arr=[...db.cours].reverse().slice(0,4);rc.innerHTML='<table><tbody>'+arr.map(c=>`<tr><td><span class="badge ${c.mat==='Biologie'?'badge-bio':'badge-geo'}">${c.mat}</span></td><td>${c.titre}</td><td>${getClasseNom(c.classeId)}</td></tr>`).join('')+'</tbody></table>';}
+}
+
+/* Date header */
+document.getElementById('date-now').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+load();refreshAllSelects();renderClasses();renderEleves();renderCours();renderNotes();renderRessources();renderEdt();updateAccueil();updateNotifStatus();planifierVerificationQuotidienne();
+</script>
+</body>
+</html>
