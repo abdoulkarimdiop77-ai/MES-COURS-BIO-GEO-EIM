@@ -8,9 +8,9 @@
 // ==============================================================================
 
 window.SUPABASE_CONFIG = {
-  // Remplacez par l'URL de votre projet Supabase (ex: https://xyzcompany.supabase.co)
-  url: '',
+  // URL de votre projet Supabase
+  url: 'https://ayjwqnpibquuiwprrklz.supabase.co',
 
-  // Remplacez par votre clé publique "anon" (ex: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)
-  anonKey: ''
+  // Clé publique d'API
+  anonKey: 'sb_publishable_E0IEzyhI-Kl73gwceVChcQ_WCYgiuHT'
 };
