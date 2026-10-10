@@ -3,80 +3,133 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestion des Cours — EIM</title>
+<title>Gestion des Cours — EIM (Biologie & Géologie)</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0F6E56">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;background:#f5f5f0;color:#1a1a1a;min-height:100vh}
-header{background:#0F6E56;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-header h1{font-size:16px;font-weight:700}
-header .hright{display:flex;align-items:center;gap:10px}
-#notif-btn{padding:6px 12px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);border-radius:20px;color:#fff;font-size:12px;cursor:pointer}
+body{font-family:'Plus Jakarta Sans','Segoe UI',Arial,sans-serif;font-size:14px;background:#f5f5f0;color:#1a1a1a;min-height:100vh}
+
+/* HEADER */
+header{background:#0F6E56;color:#fff;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+header h1{font-size:16px;font-weight:700;letter-spacing:-0.2px}
+header .hright{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+/* CLOUD STATUS BADGE */
+.cloud-badge{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.15);color:#fff;transition:all .2s ease;user-select:none}
+.cloud-badge:hover{background:rgba(255,255,255,0.25);transform:translateY(-1px)}
+.cloud-dot{width:8px;height:8px;border-radius:50%;display:inline-block;transition:all .3s}
+.cloud-badge.online .cloud-dot{background:#2ECC71;box-shadow:0 0 8px #2ECC71}
+.cloud-badge.offline .cloud-dot{background:#F39C12;box-shadow:0 0 6px #F39C12}
+.cloud-badge.syncing .cloud-dot{background:#3498DB;box-shadow:0 0 8px #3498DB;animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.25)}}
+
+#notif-btn{padding:5px 12px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);border-radius:20px;color:#fff;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
 #notif-btn:hover{background:rgba(255,255,255,0.3)}
-.nav{display:flex;gap:0;background:#fff;border-bottom:1px solid #e5e5e0;overflow-x:auto}
-.nav button{padding:10px 14px;border:none;background:transparent;cursor:pointer;font-size:12px;color:#666;border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0}
-.nav button.active{color:#0F6E56;border-bottom-color:#0F6E56;font-weight:600}
-.nav button:hover:not(.active){background:#f5f5f0}
-.main{padding:16px;max-width:1100px;margin:0 auto}
-.card{background:#fff;border:1px solid #e5e5e0;border-radius:10px;padding:14px 18px;margin-bottom:12px}
-.card-title{font-size:14px;font-weight:600;margin-bottom:12px}
+
+/* NAVIGATION */
+.nav{display:flex;gap:0;background:#fff;border-bottom:1px solid #e5e5e0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.nav button{padding:11px 15px;border:none;background:transparent;cursor:pointer;font-size:12.5px;color:#555;border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0;font-weight:500;transition:all .15s}
+.nav button.active{color:#0F6E56;border-bottom-color:#0F6E56;font-weight:700}
+.nav button:hover:not(.active){background:#f8f8f5;color:#111}
+
+/* MAIN CONTENT */
+.main{padding:18px;max-width:1120px;margin:0 auto}
+.card{background:#fff;border:1px solid #e5e5e0;border-radius:11px;padding:16px 20px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.02)}
+.card-title{font-size:14.5px;font-weight:700;margin-bottom:12px;color:#1a1a1a;display:flex;align-items:center;justify-content:space-between}
 .section{display:none}.section.active{display:block}
-.two-col{display:grid;grid-template-columns:300px 1fr;gap:12px}
-.two-eq{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.form-group{margin-bottom:9px}
-label{font-size:11px;color:#666;display:block;margin-bottom:3px;font-weight:500}
-input,select,textarea{width:100%;padding:7px 9px;border:1px solid #ddd;border-radius:7px;font-size:13px;background:#fafafa;color:#1a1a1a;font-family:inherit}
-input:focus,select:focus,textarea:focus{outline:none;border-color:#0F6E56;background:#fff}
+
+/* GRID LAYOUTS */
+.two-col{display:grid;grid-template-columns:320px 1fr;gap:14px}
+.two-eq{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+/* FORMS */
+.form-group{margin-bottom:10px}
+label{font-size:11.5px;color:#555;display:block;margin-bottom:4px;font-weight:600}
+input,select,textarea{width:100%;padding:8px 10px;border:1px solid #dcdcd6;border-radius:8px;font-size:13px;background:#fafaf8;color:#1a1a1a;font-family:inherit;transition:border-color .15s, background .15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#0F6E56;background:#fff;box-shadow:0 0 0 3px rgba(15,110,86,0.12)}
 textarea{resize:vertical;min-height:55px}
-.btn{padding:7px 14px;border-radius:7px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:13px;color:#333;font-weight:500}
+
+/* BUTTONS */
+.btn{padding:8px 15px;border-radius:8px;border:1px solid #d5d5cf;background:#fff;cursor:pointer;font-size:13px;color:#333;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
 .btn:hover{background:#f0f0eb}
 .btn-primary{background:#0F6E56;color:#fff;border-color:#0F6E56}
-.btn-primary:hover{background:#085041}
-.btn-danger{color:#c0392b;border-color:transparent;background:transparent;padding:3px 8px;font-size:12px}
-.btn-sm{padding:4px 9px;font-size:12px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
-.stat{background:#E1F5EE;border-radius:9px;padding:12px;text-align:center}
-.stat-val{font-size:24px;font-weight:700;color:#0F6E56}
-.stat-lbl{font-size:11px;color:#0F6E56;opacity:.8;margin-top:2px}
+.btn-primary:hover{background:#085041;border-color:#085041}
+.btn-success{background:#1D9E75;color:#fff;border-color:#1D9E75}
+.btn-success:hover{background:#157758}
+.btn-danger{color:#c0392b;border-color:transparent;background:transparent;padding:4px 8px;font-size:12px}
+.btn-danger:hover{background:#fde8e8}
+.btn-sm{padding:4px 10px;font-size:12px}
+.btn-secondary{background:#f0f0eb;color:#333;border-color:#dcdcd6}
+.btn-secondary:hover{background:#e5e5df}
+
+/* STATS CARDS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.stat{background:#E1F5EE;border-radius:10px;padding:14px;text-align:center;border:1px solid #cceee2}
+.stat-val{font-size:26px;font-weight:800;color:#0F6E56}
+.stat-lbl{font-size:11.5px;color:#0F6E56;opacity:.85;margin-top:3px;font-weight:600}
+
+/* TABLES */
 table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;padding:7px 9px;border-bottom:1px solid #e5e5e0;font-weight:600;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px}
-td{padding:7px 9px;border-bottom:1px solid #f0f0eb}
+th{text-align:left;padding:8px 10px;border-bottom:1px solid #e5e5e0;font-weight:700;font-size:11px;color:#777;text-transform:uppercase;letter-spacing:.4px}
+td{padding:8px 10px;border-bottom:1px solid #f0f0eb}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#fafaf8}
-.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+
+/* BADGES & PILLS */
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
 .badge-bio{background:#E1F5EE;color:#085041}
 .badge-geo{background:#FAEEDA;color:#633806}
-.badge-stat{background:#f0f0eb;color:#555;font-size:10px;padding:1px 7px;border-radius:20px}
-.empty{text-align:center;padding:24px;color:#bbb;font-size:13px}
-.note-pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:600}
+.badge-stat{background:#f0f0eb;color:#555;font-size:10px;padding:2px 8px;border-radius:20px}
+.empty{text-align:center;padding:26px;color:#aaa;font-size:13px}
+.note-pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:700}
+
 /* EDT */
 .legend{display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap}
-.leg-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#666}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#555;font-weight:500}
 .leg-dot{width:10px;height:10px;border-radius:50%}
 .grid-wrap{overflow-x:auto}
 table.edt{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
-table.edt th{background:#f5f5f0;padding:7px 5px;border:1px solid #e5e5e0;font-weight:600;font-size:11px;text-align:center;color:#666;text-transform:uppercase}
+table.edt th{background:#f5f5f0;padding:8px 5px;border:1px solid #e5e5e0;font-weight:700;font-size:11px;text-align:center;color:#666;text-transform:uppercase}
 table.edt td{border:1px solid #e5e5e0;padding:3px;vertical-align:top;height:52px}
-table.edt td.heure{background:#f5f5f0;text-align:center;font-size:11px;color:#888;font-weight:600;width:66px}
-.slot{border-radius:6px;padding:4px 6px;font-size:11px;line-height:1.35;position:relative}
-.slot-bio{background:#E1F5EE;color:#085041}
-.slot-geo{background:#FAEEDA;color:#633806}
-.del-btn{position:absolute;top:2px;right:3px;font-size:10px;cursor:pointer;color:inherit;opacity:.5;border:none;background:none;padding:0}
+table.edt td.heure{background:#f5f5f0;text-align:center;font-size:11px;color:#777;font-weight:700;width:66px}
+.slot{border-radius:7px;padding:5px 7px;font-size:11px;line-height:1.35;position:relative}
+.slot-bio{background:#E1F5EE;color:#085041;border-left:3px solid #0F6E56}
+.slot-geo{background:#FAEEDA;color:#633806;border-left:3px solid #BA7517}
+.del-btn{position:absolute;top:3px;right:4px;font-size:10px;cursor:pointer;color:inherit;opacity:.5;border:none;background:none;padding:0}
 .del-btn:hover{opacity:1}
 .slot-empty{display:block;min-height:44px}
-/* Alertes */
-.alert-box{border-radius:9px;padding:12px 14px;margin-bottom:10px;font-size:13px}
+
+/* ALERTES & TOAST */
+.alert-box{border-radius:9px;padding:12px 15px;margin-bottom:12px;font-size:13px;line-height:1.45}
 .alert-info{background:#E6F1FB;color:#0C447C;border:1px solid #B5D4F4}
 .alert-success{background:#E1F5EE;color:#085041;border:1px solid #9FE1CB}
 .alert-warn{background:#FAEEDA;color:#633806;border:1px solid #FAC775}
-.toast{position:fixed;bottom:20px;right:20px;background:#0F6E56;color:#fff;padding:12px 18px;border-radius:9px;font-size:13px;font-weight:500;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none}
-.toast.show{opacity:1}
-@media(max-width:600px){
+.alert-danger{background:#FCEBEB;color:#791F1F;border:1px solid #F7A8A8}
+
+.toast{position:fixed;bottom:24px;right:24px;background:#0F6E56;color:#fff;padding:13px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s ease;pointer-events:none;box-shadow:0 6px 18px rgba(0,0,0,0.18)}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* CLOUD TAB STYLES */
+.cloud-status-card{padding:16px 20px;border-radius:10px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.cloud-status-card.online{background:linear-gradient(135deg, #E1F5EE 0%, #D4EFE5 100%);border:1px solid #9FE1CB;color:#085041}
+.cloud-status-card.offline{background:linear-gradient(135deg, #FEF3D6 0%, #FBECC3 100%);border:1px solid #FAD180;color:#633806}
+.cloud-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:12px 0}
+.cloud-mini{background:#fafaf8;border:1px solid #e5e5e0;border-radius:9px;padding:12px 14px}
+.cloud-mini .val{font-size:22px;font-weight:800;color:#0F6E56}
+.cloud-mini .lbl{font-size:11.5px;color:#666;margin-top:2px;font-weight:500}
+.sql-box{background:#18181b;color:#a1a1aa;border-radius:8px;padding:12px 14px;font-family:Consolas,monaco,monospace;font-size:12px;overflow-x:auto;max-height:160px;margin:10px 0;line-height:1.45;white-space:pre}
+
+@media(max-width:768px){
   .two-col{grid-template-columns:1fr}
   .stats{grid-template-columns:repeat(2,1fr)}
-  .three-col{grid-template-columns:1fr 1fr}
+  .three-col{grid-template-columns:1fr}
+  header{padding:10px 14px}
+  .main{padding:12px}
 }
 </style>
 </head>
@@ -84,14 +137,20 @@ table.edt td.heure{background:#f5f5f0;text-align:center;font-size:11px;color:#88
 
 <div class="toast" id="toast"></div>
 
+<!-- HEADER -->
 <header>
   <h1>📚 Gestion des Cours — EIM</h1>
   <div class="hright">
-    <span style="font-size:11px;opacity:.7" id="date-now"></span>
+    <button id="cloud-badge" class="cloud-badge offline" onclick="showTab('cloud')">
+      <span class="cloud-dot"></span>
+      <span id="cloud-badge-text">Mode Local</span>
+    </button>
+    <span style="font-size:11.5px;opacity:.8" id="date-now"></span>
     <button id="notif-btn" onclick="activerNotifs()">🔔 Activer les alertes</button>
   </div>
 </header>
 
+<!-- NAVIGATION -->
 <nav class="nav">
   <button class="active" onclick="showTab('accueil')">🏠 Accueil</button>
   <button onclick="showTab('classes')">👥 Classes</button>
@@ -100,6 +159,7 @@ table.edt td.heure{background:#f5f5f0;text-align:center;font-size:11px;color:#88
   <button onclick="showTab('ressources')">📁 Ressources</button>
   <button onclick="showTab('edt')">🗓️ Emploi du temps</button>
   <button onclick="showTab('alertes')">🔔 Alertes</button>
+  <button onclick="showTab('cloud')">☁️ Cloud Supabase</button>
 </nav>
 
 <div class="main">
@@ -269,7 +329,7 @@ table.edt td.heure{background:#f5f5f0;text-align:center;font-size:11px;color:#88
       <div class="form-group"><label>Leçon / Chapitre</label><input id="et-lecon" placeholder="La cellule vivante"></div>
     </div>
     <div class="form-group" style="max-width:200px"><label>Salle</label><input id="et-salle" placeholder="Salle 12"></div>
-    <div style="display:flex;align-items:center;gap:12px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
       <button class="btn btn-primary" onclick="addSlot()">+ Ajouter le créneau</button>
       <span id="et-err" style="font-size:12px;color:#c0392b"></span>
       <button class="btn btn-danger" onclick="clearEdt()" style="margin-left:auto">🗑 Effacer tout l'EDT</button>
@@ -356,10 +416,128 @@ table.edt td.heure{background:#f5f5f0;text-align:center;font-size:11px;color:#88
   </div>
 </div>
 
+<!-- CLOUD SUPABASE TAB -->
+<div id="cloud" class="section">
+  <!-- Status Banner -->
+  <div id="cloud-status-card" class="cloud-status-card offline">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px">
+        <span class="cloud-dot" style="width:10px;height:10px"></span>
+        <span id="cloud-status-title">Mode Local (Hors-ligne)</span>
+      </div>
+      <p style="font-size:12.5px;margin-top:4px;opacity:.9" id="cloud-status-desc">Les données sont enregistrées uniquement dans la mémoire locale de ce navigateur.</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-sm" onclick="rechargerDepuisSupabase()" id="btn-recharger-cloud">🔄 Actualiser Cloud</button>
+      <button class="btn btn-success btn-sm" onclick="migrerDonneesLocalesVersSupabase()" id="btn-migrer-cloud">📤 Migrer Local vers Cloud</button>
+    </div>
+  </div>
+
+  <!-- Synced Metrics -->
+  <div class="cloud-grid">
+    <div class="cloud-mini">
+      <div class="val" id="sb-count-classes">0</div>
+      <div class="lbl">Classes synchronisées</div>
+    </div>
+    <div class="cloud-mini">
+      <div class="val" id="sb-count-eleves">0</div>
+      <div class="lbl">Élèves enregistrés</div>
+    </div>
+    <div class="cloud-mini">
+      <div class="val" id="sb-count-cours">0</div>
+      <div class="lbl">Chapitres au Cloud</div>
+    </div>
+    <div class="cloud-mini">
+      <div class="val" id="sb-count-notes">0</div>
+      <div class="lbl">Notes au Cloud</div>
+    </div>
+  </div>
+
+  <!-- Configuration Form -->
+  <div class="card">
+    <div class="card-title">⚙️ Paramètres de Connexion Supabase</div>
+    <p style="font-size:12.5px;color:#666;margin-bottom:14px">
+      Connectez votre projet Supabase pour sauvegarder vos données dans le Cloud, y accéder depuis n'importe quel appareil et les synchroniser en direct.
+    </p>
+
+    <div class="two-eq">
+      <div class="form-group">
+        <label>URL du Projet Supabase (Project URL)</label>
+        <input id="sb-url" placeholder="https://votrenom.supabase.co">
+      </div>
+      <div class="form-group">
+        <label>Clé Publique Anon (Project API Anon Key)</label>
+        <div style="display:flex;gap:6px">
+          <input id="sb-anon-key" type="password" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6...">
+          <button class="btn btn-secondary btn-sm" type="button" onclick="toggleAnonKeyVisibility()">👁️</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="sauvegarderEtConnecterSupabase()">💾 Enregistrer & Connecter</button>
+      <button class="btn btn-secondary" onclick="testerConnexionSupabase()">🧪 Tester la connexion</button>
+      <button class="btn btn-danger" onclick="deconnecterSupabase()" style="margin-left:auto">🔌 Déconnecter (Mode Local)</button>
+    </div>
+
+    <div id="sb-test-status" style="margin-top:12px"></div>
+  </div>
+
+  <!-- Guide Supabase & Vercel -->
+  <div class="card">
+    <div class="card-title">🚀 Guide d'installation & Déploiement Vercel</div>
+    
+    <div style="font-size:13px;line-height:1.65;color:#444">
+      <div style="margin-bottom:16px">
+        <strong style="color:#0F6E56">Étape 1 : Préparer la base de données sur Supabase</strong>
+        <p style="color:#666;margin:4px 0 8px 0">Créez un projet gratuit sur <a href="https://supabase.com" target="_blank" style="color:#0F6E56;font-weight:600">supabase.com</a>, allez dans l'onglet <strong>SQL Editor</strong>, et exécutez le script SQL ci-dessous en un clic :</p>
+        <button class="btn btn-secondary btn-sm" onclick="copierScriptSQL()">📋 Copier le script SQL complet (supabase-schema.sql)</button>
+        <span id="copy-sql-status" style="font-size:12px;color:#0F6E56;margin-left:8px;font-weight:600"></span>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <strong style="color:#0F6E56">Étape 2 : Récupérer vos clés API Supabase</strong>
+        <p style="color:#666;margin:4px 0">Dans Supabase, rendez-vous dans <strong>Project Settings > API</strong> et copiez :</p>
+        <ul style="padding-left:20px;color:#555">
+          <li><strong>Project URL</strong> (ex: <code style="background:#eee;padding:1px 5px;border-radius:4px">https://xyz.supabase.co</code>)</li>
+          <li><strong>Project API key (anon / public)</strong> (clé commençant par <code style="background:#eee;padding:1px 5px;border-radius:4px">eyJ...</code>)</li>
+        </ul>
+      </div>
+
+      <div>
+        <strong style="color:#0F6E56">Étape 3 : Déploiement automatique sur Vercel</strong>
+        <p style="color:#666;margin:4px 0 8px 0">
+          Sur <a href="https://vercel.com" target="_blank" style="color:#0F6E56;font-weight:600">vercel.com</a>, importez votre dépôt GitHub <strong>abdoulkarimdiop77-ai/MES-COURS-BIO-GEO-EIM</strong>.
+          Dans les <strong>Environment Variables</strong> du projet Vercel, ajoutez :
+        </p>
+        <table style="max-width:550px;background:#fafaf8;border:1px solid #e5e5e0;border-radius:6px;margin:8px 0">
+          <thead>
+            <tr><th>Variable</th><th>Valeur</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>SUPABASE_URL</code></td><td>Votre URL de projet Supabase</td></tr>
+            <tr><td><code>SUPABASE_ANON_KEY</code></td><td>Votre clé Anon publique</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:12px;color:#777;margin-top:6px">
+          💡 La fonction Serverless Vercel incluse (<code style="background:#eee;padding:1px 5px;border-radius:4px">/api/config</code>) injectera automatiquement ces clés en production sans aucune configuration manuelle !
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div><!-- /main -->
 
+<!-- SCRIPTS EXTERNES -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
 <script>
+// ==============================================================================
+// CONSTANTES & ÉTAT DE L'APPLICATION
+// ==============================================================================
 const JOURS=['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
 const JOURS_FR=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
 const HEURES=['07h00','08h00','09h00','10h00','11h00','12h00','13h00','14h00','15h00','16h00','17h00','18h00'];
@@ -368,114 +546,752 @@ let db={classes:[],eleves:[],cours:[],notes:[],ressources:[],slots:[],rappels:[]
 let nid={cl:1,el:1,co:1,no:1,re:1,sl:1};
 let cfg={email:'abdoulkarimdiop77@gmail.com',ejsService:'',ejsTemplate:'',ejsPubKey:''};
 
-function save(){try{localStorage.setItem('eim_db',JSON.stringify({db,nid,cfg}));}catch(e){}}
-function load(){
+// SUPABASE CLIENT & STATE
+let supabase = null;
+let isSupabaseConnected = false;
+let supabaseConfig = { url: '', anonKey: '' };
+let realtimeSubscription = null;
+
+// ==============================================================================
+// GESTION DU STOCKAGE LOCAL (BACKUP & FALLBACK)
+// ==============================================================================
+function saveLocal(){
   try{
-    const d=localStorage.getItem('eim_db');
-    if(d){const p=JSON.parse(d);db=p.db||db;nid=p.nid||nid;cfg=p.cfg||cfg;}
-    if(cfg.email)document.getElementById('email-rappel').value=cfg.email;
-    if(cfg.ejsService)document.getElementById('ejs-service').value=cfg.ejsService;
-    if(cfg.ejsTemplate)document.getElementById('ejs-template').value=cfg.ejsTemplate;
-    if(cfg.ejsPubKey)document.getElementById('ejs-pubkey').value=cfg.ejsPubKey;
-    if(cfg.ejsPubKey){try{emailjs.init(cfg.ejsPubKey);}catch(e){}}
+    localStorage.setItem('eim_db', JSON.stringify({db, nid, cfg}));
+  }catch(e){
+    console.warn('Erreur sauvegarde localStorage:', e);
+  }
+}
+
+function loadLocal(){
+  try{
+    const d = localStorage.getItem('eim_db');
+    if(d){
+      const p = JSON.parse(d);
+      db = p.db || db;
+      nid = p.nid || nid;
+      cfg = p.cfg || cfg;
+    }
+    if(cfg.email && document.getElementById('email-rappel')) document.getElementById('email-rappel').value = cfg.email;
+    if(cfg.ejsService && document.getElementById('ejs-service')) document.getElementById('ejs-service').value = cfg.ejsService;
+    if(cfg.ejsTemplate && document.getElementById('ejs-template')) document.getElementById('ejs-template').value = cfg.ejsTemplate;
+    if(cfg.ejsPubKey && document.getElementById('ejs-pubkey')) document.getElementById('ejs-pubkey').value = cfg.ejsPubKey;
+    if(cfg.ejsPubKey && window.emailjs){ try{ emailjs.init(cfg.ejsPubKey); }catch(e){} }
   }catch(e){}
 }
 
-function toast(msg,dur=3000){
+// ==============================================================================
+// NOTIFICATIONS TOAST & NAVIGATION
+// ==============================================================================
+function toast(msg, dur=3000){
   const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),dur);
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), dur);
 }
 
 function showTab(t){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
-  document.getElementById(t).classList.add('active');
-  const tabs=['accueil','classes','cours','notes','ressources','edt','alertes'];
-  document.querySelectorAll('.nav button')[tabs.indexOf(t)].classList.add('active');
-  if(t==='accueil')updateAccueil();
-  if(t==='edt')renderEdt();
-  if(t==='alertes'){renderDemain();renderHistorique();updateNotifStatus();}
+  
+  const targetSection = document.getElementById(t);
+  if(targetSection) targetSection.classList.add('active');
+
+  const tabs=['accueil','classes','cours','notes','ressources','edt','alertes','cloud'];
+  const tabIndex = tabs.indexOf(t);
+  if(tabIndex !== -1 && document.querySelectorAll('.nav button')[tabIndex]){
+    document.querySelectorAll('.nav button')[tabIndex].classList.add('active');
+  }
+
+  if(t==='accueil') updateAccueil();
+  if(t==='edt') renderEdt();
+  if(t==='alertes'){ renderDemain(); renderHistorique(); updateNotifStatus(); }
+  if(t==='cloud') renderCloudTab();
 }
 
-function getClasseNom(id){const c=db.classes.find(x=>x.id==id);return c?c.nom:'—';}
-function getEleveNom(id){const e=db.eleves.find(x=>x.id==id);return e?e.nom:'—';}
-function noteStyle(n,b){const p=n/b;if(p>=0.7)return 'background:#E1F5EE;color:#085041';if(p>=0.5)return 'background:#FAEEDA;color:#633806';return 'background:#FCEBEB;color:#791F1F';}
+function getClasseNom(id){ const c=db.classes.find(x=>x.id==id); return c?c.nom:'—'; }
+function getEleveNom(id){ const e=db.eleves.find(x=>x.id==id); return e?e.nom:'—'; }
+function noteStyle(n,b){
+  const p=n/b;
+  if(p>=0.7) return 'background:#E1F5EE;color:#085041';
+  if(p>=0.5) return 'background:#FAEEDA;color:#633806';
+  return 'background:#FCEBEB;color:#791F1F';
+}
 
 function refreshAllSelects(){
-  const opts=db.classes.map(c=>`<option value="${c.id}">${c.nom}</option>`).join('');
-  ['el-classe','co-classe','no-classe','filter-classe-note','filter-classe-el','filter-classe-cours'].forEach(id=>{
-    const el=document.getElementById(id);if(!el)return;
-    const first=el.options[0].cloneNode(true);el.innerHTML='';el.appendChild(first);
-    el.insertAdjacentHTML('beforeend',opts);
-  });
-  ['re-classe'].forEach(id=>{
-    const el=document.getElementById(id);if(!el)return;
-    const first=el.options[0].cloneNode(true);el.innerHTML='';el.appendChild(first);
-    el.insertAdjacentHTML('beforeend',opts);
+  const opts = db.classes.map(c=>`<option value="${c.id}">${c.nom}</option>`).join('');
+  ['el-classe','co-classe','no-classe','filter-classe-note','filter-classe-el','filter-classe-cours','re-classe'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    const first=el.options[0]?el.options[0].cloneNode(true):document.createElement('option');
+    el.innerHTML='';
+    el.appendChild(first);
+    el.insertAdjacentHTML('beforeend', opts);
   });
   filterElevesNote();
 }
 
 function filterElevesNote(){
   const cid=document.getElementById('no-classe').value;
-  const arr=cid?db.eleves.filter(e=>e.classeId==cid):db.eleves;
+  const arr=cid ? db.eleves.filter(e=>e.classeId==cid) : db.eleves;
   const sel=document.getElementById('no-eleve');
+  if(!sel) return;
   sel.innerHTML='<option value="">-- Choisir --</option>'+arr.map(e=>`<option value="${e.id}">${e.nom}</option>`).join('');
 }
 
-/* CLASSES */
-function addClasse(){
-  const nom=document.getElementById('cl-nom').value.trim();if(!nom)return;
-  db.classes.push({id:nid.cl++,nom,niveau:document.getElementById('cl-niveau').value,effectif:document.getElementById('cl-eff').value||'?'});
-  document.getElementById('cl-nom').value='';document.getElementById('cl-eff').value='';
-  save();refreshAllSelects();renderClasses();updateStats();toast('Classe ajoutée ✓');
+function refreshAllViews(){
+  refreshAllSelects();
+  renderClasses();
+  renderEleves();
+  renderCours();
+  renderNotes();
+  renderRessources();
+  renderEdt();
+  updateAccueil();
+  updateStats();
+  renderCloudTab();
 }
-function delClasse(id){if(!confirm('Supprimer cette classe ?'))return;db.classes=db.classes.filter(x=>x.id!==id);db.eleves=db.eleves.filter(x=>x.classeId!==id);save();refreshAllSelects();renderClasses();renderEleves();updateStats();}
+
+// ==============================================================================
+// GESTION SUPABASE (CONNEXION, INITIALISATION, TEMPS RÉEL)
+// ==============================================================================
+function updateCloudBadge(state, text){
+  const badge = document.getElementById('cloud-badge');
+  const txt = document.getElementById('cloud-badge-text');
+  if(!badge || !txt) return;
+
+  badge.className = 'cloud-badge ' + state;
+  txt.textContent = text;
+}
+
+async function initSupabase(){
+  updateCloudBadge('syncing', 'Connexion...');
+
+  // 1. Détection via l'API Serverless Vercel (/api/config)
+  let url = '';
+  let anonKey = '';
+
+  try{
+    const res = await fetch('/api/config');
+    if(res.ok){
+      const data = await res.json();
+      if(data.supabaseUrl && data.supabaseAnonKey){
+        url = data.supabaseUrl;
+        anonKey = data.supabaseAnonKey;
+      }
+    }
+  }catch(e){}
+
+  // 2. Détection via localStorage
+  if(!url || !anonKey){
+    try{
+      const local = localStorage.getItem('eim_supabase_config');
+      if(local){
+        const parsed = JSON.parse(local);
+        url = parsed.url || url;
+        anonKey = parsed.anonKey || anonKey;
+      }
+    }catch(e){}
+  }
+
+  // 3. Détection via window.SUPABASE_CONFIG (fichier supabase-config.js)
+  if((!url || !anonKey) && window.SUPABASE_CONFIG){
+    url = url || window.SUPABASE_CONFIG.url;
+    anonKey = anonKey || window.SUPABASE_CONFIG.anonKey;
+  }
+
+  supabaseConfig = { url: url || '', anonKey: anonKey || '' };
+
+  const urlInput = document.getElementById('sb-url');
+  const keyInput = document.getElementById('sb-anon-key');
+  if(urlInput && supabaseConfig.url) urlInput.value = supabaseConfig.url;
+  if(keyInput && supabaseConfig.anonKey) keyInput.value = supabaseConfig.anonKey;
+
+  if(supabaseConfig.url && supabaseConfig.anonKey && window.supabase){
+    try{
+      supabase = window.supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey);
+      
+      // Test de connectivité
+      const test = await supabase.from('classes').select('id').limit(1);
+      if(test.error){
+        console.warn('Erreur test Supabase:', test.error.message);
+        isSupabaseConnected = false;
+        updateCloudBadge('offline', 'Mode Local (Erreur Supabase)');
+      } else {
+        isSupabaseConnected = true;
+        updateCloudBadge('online', 'Supabase Connecté');
+        await fetchAllFromSupabase();
+        setupRealtime();
+        return;
+      }
+    }catch(err){
+      console.warn('Exception initialisation Supabase:', err);
+      isSupabaseConnected = false;
+      updateCloudBadge('offline', 'Mode Local');
+    }
+  } else {
+    isSupabaseConnected = false;
+    updateCloudBadge('offline', 'Mode Local');
+  }
+
+  renderCloudTab();
+}
+
+async function fetchAllFromSupabase(){
+  if(!supabase || !isSupabaseConnected) return false;
+  updateCloudBadge('syncing', 'Synchronisation...');
+
+  try{
+    const [clRes, elRes, coRes, noRes, reRes, slRes, rapRes, cfgRes] = await Promise.all([
+      supabase.from('classes').select('*').order('id', { ascending: true }),
+      supabase.from('eleves').select('*').order('id', { ascending: true }),
+      supabase.from('cours').select('*').order('id', { ascending: true }),
+      supabase.from('notes').select('*').order('id', { ascending: true }),
+      supabase.from('ressources').select('*').order('id', { ascending: true }),
+      supabase.from('edt_slots').select('*').order('id', { ascending: true }),
+      supabase.from('rappels').select('*').order('id', { ascending: true }),
+      supabase.from('app_config').select('*').eq('id', 'general').maybeSingle()
+    ]);
+
+    if(clRes.error) throw clRes.error;
+
+    db.classes = clRes.data || [];
+    db.eleves = (elRes.data || []).map(e => ({ id: e.id, nom: e.nom, classeId: e.classe_id, num: e.num }));
+    db.cours = (coRes.data || []).map(c => ({ id: c.id, titre: c.titre, mat: c.mat, classeId: c.classe_id, debut: c.debut, statut: c.statut, obj: c.obj }));
+    db.notes = (noRes.data || []).map(n => ({ id: n.id, titre: n.titre, mat: n.mat, classeId: n.classe_id, eleveId: n.eleve_id, date: n.date, bareme: Number(n.bareme), note: Number(n.note) }));
+    db.ressources = (reRes.data || []).map(r => ({ id: r.id, titre: r.titre, type: r.type, mat: r.mat, classeId: r.classe_id, desc: r.desc_txt }));
+    db.slots = slRes.data || [];
+    db.rappels = (rapRes.data || []).map(r => ({ id: r.id, date: r.date, mat: r.mat, classe: r.classe, lecon: r.lecon, canal: r.canal, ok: r.ok }));
+
+    if(cfgRes.data){
+      cfg.email = cfgRes.data.email || cfg.email;
+      cfg.ejsService = cfgRes.data.ejs_service || cfg.ejsService;
+      cfg.ejsTemplate = cfgRes.data.ejs_template || cfg.ejsTemplate;
+      cfg.ejsPubKey = cfgRes.data.ejs_pub_key || cfg.ejsPubKey;
+      if(cfg.email && document.getElementById('email-rappel')) document.getElementById('email-rappel').value = cfg.email;
+      if(cfg.ejsService && document.getElementById('ejs-service')) document.getElementById('ejs-service').value = cfg.ejsService;
+      if(cfg.ejsTemplate && document.getElementById('ejs-template')) document.getElementById('ejs-template').value = cfg.ejsTemplate;
+      if(cfg.ejsPubKey && document.getElementById('ejs-pubkey')) document.getElementById('ejs-pubkey').value = cfg.ejsPubKey;
+      if(cfg.ejsPubKey && window.emailjs){ try{ emailjs.init(cfg.ejsPubKey); }catch(e){} }
+    }
+
+    saveLocal();
+    refreshAllViews();
+    updateCloudBadge('online', 'Supabase Connecté');
+    return true;
+  }catch(err){
+    console.error('Erreur chargement Supabase:', err);
+    updateCloudBadge('offline', 'Erreur Sync');
+    return false;
+  }
+}
+
+function setupRealtime(){
+  if(!supabase || !isSupabaseConnected) return;
+  try{
+    if(realtimeSubscription) supabase.removeChannel(realtimeSubscription);
+
+    realtimeSubscription = supabase.channel('eim-db-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'classes' }, () => fetchAllFromSupabase())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'eleves' }, () => fetchAllFromSupabase())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'cours' }, () => fetchAllFromSupabase())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'notes' }, () => fetchAllFromSupabase())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'ressources' }, () => fetchAllFromSupabase())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'edt_slots' }, () => fetchAllFromSupabase())
+      .subscribe();
+  }catch(e){
+    console.warn('Supabase Realtime ignoré:', e);
+  }
+}
+
+async function sauvegarderEtConnecterSupabase(){
+  const url = document.getElementById('sb-url').value.trim();
+  const anonKey = document.getElementById('sb-anon-key').value.trim();
+  const statusEl = document.getElementById('sb-test-status');
+
+  if(!url || !anonKey){
+    statusEl.innerHTML = '<div class="alert-box alert-warn">Veuillez renseigner l\'URL et la clé Anon.</div>';
+    return;
+  }
+
+  statusEl.innerHTML = '<div class="alert-box alert-info">Connexion en cours à Supabase...</div>';
+
+  try{
+    const client = window.supabase.createClient(url, anonKey);
+    const test = await client.from('classes').select('id').limit(1);
+
+    if(test.error){
+      statusEl.innerHTML = `<div class="alert-box alert-danger">❌ Erreur Supabase : ${test.error.message}</div>`;
+      return;
+    }
+
+    localStorage.setItem('eim_supabase_config', JSON.stringify({ url, anonKey }));
+    supabaseConfig = { url, anonKey };
+    supabase = client;
+    isSupabaseConnected = true;
+
+    statusEl.innerHTML = '<div class="alert-box alert-success">✓ Connexion réussie ! Chargement des données...</div>';
+    updateCloudBadge('online', 'Supabase Connecté');
+    await fetchAllFromSupabase();
+    setupRealtime();
+    toast('Connecté à Supabase avec succès ✓');
+  }catch(err){
+    statusEl.innerHTML = `<div class="alert-box alert-danger">❌ Impossible de contacter le serveur : ${err.message}</div>`;
+  }
+}
+
+async function testerConnexionSupabase(){
+  const url = document.getElementById('sb-url').value.trim();
+  const anonKey = document.getElementById('sb-anon-key').value.trim();
+  const statusEl = document.getElementById('sb-test-status');
+
+  if(!url || !anonKey){
+    statusEl.innerHTML = '<div class="alert-box alert-warn">Veuillez saisir l\'URL et la clé Anon à tester.</div>';
+    return;
+  }
+
+  statusEl.innerHTML = '<div class="alert-box alert-info">Test en cours...</div>';
+
+  try{
+    const client = window.supabase.createClient(url, anonKey);
+    const start = performance.now();
+    const test = await client.from('classes').select('id').limit(1);
+    const duration = Math.round(performance.now() - start);
+
+    if(test.error){
+      statusEl.innerHTML = `<div class="alert-box alert-danger">❌ Échec du test : ${test.error.message}<br><small>Avez-vous bien exécuté le script SQL <code>supabase-schema.sql</code> ?</small></div>`;
+    } else {
+      statusEl.innerHTML = `<div class="alert-box alert-success">✓ Test réussi ! Base accessible (latence : ${duration}ms).</div>`;
+    }
+  }catch(err){
+    statusEl.innerHTML = `<div class="alert-box alert-danger">❌ Erreur réseau : ${err.message}</div>`;
+  }
+}
+
+function deconnecterSupabase(){
+  if(!confirm('Voulez-vous repasser en mode local (déconnecté de Supabase) ?')) return;
+  localStorage.removeItem('eim_supabase_config');
+  isSupabaseConnected = false;
+  supabase = null;
+  updateCloudBadge('offline', 'Mode Local');
+  document.getElementById('sb-test-status').innerHTML = '<div class="alert-box alert-info">Déconnecté de Supabase. L\'application fonctionne en mode local.</div>';
+  renderCloudTab();
+  toast('Mode local activé ✓');
+}
+
+function toggleAnonKeyVisibility(){
+  const inp = document.getElementById('sb-anon-key');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+async function rechargerDepuisSupabase(){
+  if(!isSupabaseConnected || !supabase){
+    toast('Supabase non connecté.');
+    return;
+  }
+  const ok = await fetchAllFromSupabase();
+  if(ok) toast('Données actualisées depuis Supabase ✓');
+  else toast('Erreur lors de l\'actualisation.');
+}
+
+async function migrerDonneesLocalesVersSupabase(){
+  if(!isSupabaseConnected || !supabase){
+    toast('Veuillez d\'abord vous connecter à Supabase.');
+    return;
+  }
+
+  const btn = document.getElementById('btn-migrer-cloud');
+  if(btn) btn.disabled = true;
+  toast('Migration des données en cours...');
+
+  try{
+    // 1. Classes
+    const idMapClasse = {};
+    for(const c of db.classes){
+      const { data, error } = await supabase.from('classes').insert({
+        nom: c.nom,
+        niveau: c.niveau,
+        effectif: c.effectif
+      }).select().single();
+      if(!error && data) idMapClasse[c.id] = data.id;
+    }
+
+    // 2. Élèves
+    const idMapEleve = {};
+    for(const e of db.eleves){
+      const newCid = idMapClasse[e.classeId] || e.classeId;
+      const { data, error } = await supabase.from('eleves').insert({
+        nom: e.nom,
+        classe_id: newCid,
+        num: e.num
+      }).select().single();
+      if(!error && data) idMapEleve[e.id] = data.id;
+    }
+
+    // 3. Cours
+    for(const co of db.cours){
+      const newCid = idMapClasse[co.classeId] || co.classeId;
+      await supabase.from('cours').insert({
+        titre: co.titre,
+        mat: co.mat,
+        classe_id: newCid,
+        debut: co.debut,
+        statut: co.statut,
+        obj: co.obj
+      });
+    }
+
+    // 4. Notes
+    for(const n of db.notes){
+      const newCid = idMapClasse[n.classeId] || n.classeId;
+      const newEid = idMapEleve[n.eleveId] || n.eleveId;
+      await supabase.from('notes').insert({
+        titre: n.titre,
+        mat: n.mat,
+        classe_id: newCid,
+        eleve_id: newEid,
+        date: n.date,
+        bareme: n.bareme,
+        note: n.note
+      });
+    }
+
+    // 5. Ressources
+    for(const r of db.ressources){
+      const newCid = r.classeId ? (idMapClasse[r.classeId] || r.classeId) : null;
+      await supabase.from('ressources').insert({
+        titre: r.titre,
+        type: r.type,
+        mat: r.mat,
+        classe_id: newCid,
+        desc_txt: r.desc
+      });
+    }
+
+    // 6. Emploi du temps (slots)
+    for(const s of db.slots){
+      await supabase.from('edt_slots').insert({
+        jour: s.jour,
+        hdeb: s.hdeb,
+        hfin: s.hfin,
+        mat: s.mat,
+        classe: s.classe,
+        lecon: s.lecon,
+        salle: s.salle,
+        span: s.span
+      });
+    }
+
+    // 7. Configuration de l'application
+    await supabase.from('app_config').upsert({
+      id: 'general',
+      email: cfg.email,
+      ejs_service: cfg.ejsService,
+      ejs_template: cfg.ejsTemplate,
+      ejs_pub_key: cfg.ejsPubKey,
+      updated_at: new Date().toISOString()
+    });
+
+    toast('🎉 Migration réussie ! Vos données sont en sécurité dans le Cloud.');
+    await fetchAllFromSupabase();
+    renderCloudTab();
+  }catch(err){
+    console.error('Erreur migration:', err);
+    toast('Erreur de migration : ' + err.message);
+  }finally{
+    if(btn) btn.disabled = false;
+  }
+}
+
+function renderCloudTab(){
+  const card = document.getElementById('cloud-status-card');
+  const title = document.getElementById('cloud-status-title');
+  const desc = document.getElementById('cloud-status-desc');
+
+  if(isSupabaseConnected){
+    card.className = 'cloud-status-card online';
+    title.textContent = '🟢 Connecté à Supabase (Cloud actif)';
+    desc.textContent = `Les données sont synchronisées en direct avec votre projet : ${supabaseConfig.url || 'Supabase'}`;
+  } else {
+    card.className = 'cloud-status-card offline';
+    title.textContent = '🟠 Mode Local (Hors-ligne / Supabase non connecté)';
+    desc.textContent = 'Toutes les données sont conservées localement dans ce navigateur. Renseignez vos identifiants ci-dessous pour activer le Cloud.';
+  }
+
+  document.getElementById('sb-count-classes').textContent = db.classes.length;
+  document.getElementById('sb-count-eleves').textContent = db.eleves.length;
+  document.getElementById('sb-count-cours').textContent = db.cours.length;
+  document.getElementById('sb-count-notes').textContent = db.notes.length;
+}
+
+const SQL_SCHEMA_CONTENT = `-- SCHÉMA SUPABASE POUR MES-COURS-BIO-GEO-EIM
+CREATE TABLE IF NOT EXISTS public.classes (
+    id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    nom TEXT NOT NULL,
+    niveau TEXT DEFAULT '11ème',
+    effectif TEXT DEFAULT '',
+    created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.eleves (
+    id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    nom TEXT NOT NULL,
+    classe_id BIGINT REFERENCES public.classes(id) ON DELETE CASCADE,
+    num TEXT DEFAULT '',
+    created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.cours (
+    id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    titre TEXT NOT NULL,
+    mat TEXT NOT NULL,
+    classe_id BIGINT REFERENCES public.classes(id) ON DELETE CASCADE,
+    debut TEXT DEFAULT '',
+    statut TEXT DEFAULT 'Planifié',
+    obj TEXT DEFAULT '',
+    created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.notes (
+    id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    titre TEXT NOT NULL,
+    mat TEXT NOT NULL,
+    classe_id BIGINT REFERENCES public.classes(id) ON DELETE CASCADE,
+    eleve_id BIGINT REFERENCES public.eleves(id) ON DELETE CASCADE,
+    date TEXT DEFAULT '',
+    bareme NUMERIC DEFAULT 20,
+    note NUMERIC NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.ressources (
+    id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    titre TEXT NOT NULL,
+    type TEXT DEFAULT 'Document',
+    mat TEXT DEFAULT 'Biologie',
+    classe_id BIGINT REFERENCES public.classes(id) ON DELETE SET NULL,
+    desc_txt TEXT DEFAULT '',
+    created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.edt_slots (
+    id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    jour TEXT NOT NULL,
+    hdeb TEXT NOT NULL,
+    hfin TEXT NOT NULL,
+    mat TEXT NOT NULL,
+    classe TEXT NOT NULL,
+    lecon TEXT DEFAULT '',
+    salle TEXT DEFAULT '',
+    span INTEGER DEFAULT 1,
+    created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.rappels (
+    id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    date TEXT NOT NULL,
+    mat TEXT NOT NULL,
+    classe TEXT NOT NULL,
+    lecon TEXT DEFAULT '',
+    canal TEXT DEFAULT 'Navigateur',
+    ok BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.app_config (
+    id TEXT PRIMARY KEY DEFAULT 'general',
+    email TEXT DEFAULT 'abdoulkarimdiop77@gmail.com',
+    ejs_service TEXT DEFAULT '',
+    ejs_template TEXT DEFAULT '',
+    ejs_pub_key TEXT DEFAULT '',
+    updated_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+INSERT INTO public.app_config (id, email) VALUES ('general', 'abdoulkarimdiop77@gmail.com') ON CONFLICT (id) DO NOTHING;
+
+-- RLS & Droits publics pour la clé Anon
+ALTER TABLE public.classes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.eleves ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.cours ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.notes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.ressources ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.edt_slots ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.rappels ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.app_config ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public classes" ON public.classes FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public eleves" ON public.eleves FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public cours" ON public.cours FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public notes" ON public.notes FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public ressources" ON public.ressources FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public edt_slots" ON public.edt_slots FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public rappels" ON public.rappels FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public app_config" ON public.app_config FOR ALL USING (true) WITH CHECK (true);
+`;
+
+function copierScriptSQL(){
+  navigator.clipboard.writeText(SQL_SCHEMA_CONTENT).then(()=>{
+    const status = document.getElementById('copy-sql-status');
+    status.textContent = '✓ Script SQL copié dans le presse-papier !';
+    setTimeout(()=> status.textContent = '', 4000);
+    toast('Code SQL copié ✓');
+  }).catch(()=>{
+    toast('Impossible de copier automatiquement.');
+  });
+}
+
+// ==============================================================================
+// GESTION DES CLASSES
+// ==============================================================================
+async function addClasse(){
+  const nom=document.getElementById('cl-nom').value.trim();
+  if(!nom) return;
+  const niveau=document.getElementById('cl-niveau').value;
+  const effectif=document.getElementById('cl-eff').value||'?';
+
+  if(isSupabaseConnected && supabase){
+    const { data, error } = await supabase.from('classes').insert({ nom, niveau, effectif }).select().single();
+    if(error){ toast('Erreur Supabase: ' + error.message); return; }
+    db.classes.push(data);
+  } else {
+    db.classes.push({ id: nid.cl++, nom, niveau, effectif });
+  }
+
+  document.getElementById('cl-nom').value='';
+  document.getElementById('cl-eff').value='';
+  saveLocal();
+  refreshAllSelects();
+  renderClasses();
+  updateStats();
+  toast('Classe ajoutée ✓');
+}
+
+async function delClasse(id){
+  if(!confirm('Supprimer cette classe ?')) return;
+
+  if(isSupabaseConnected && supabase){
+    const { error } = await supabase.from('classes').delete().eq('id', id);
+    if(error){ toast('Erreur Supabase: ' + error.message); return; }
+  }
+
+  db.classes=db.classes.filter(x=>x.id!==id);
+  db.eleves=db.eleves.filter(x=>x.classeId!==id);
+  db.cours=db.cours.filter(x=>x.classeId!==id);
+  db.notes=db.notes.filter(x=>x.classeId!==id);
+  saveLocal();
+  refreshAllSelects();
+  renderClasses();
+  renderEleves();
+  updateStats();
+  toast('Classe supprimée ✓');
+}
+
 function renderClasses(){
   const el=document.getElementById('liste-classes');
-  if(!db.classes.length){el.innerHTML='<div class="empty">Aucune classe</div>';return;}
+  if(!db.classes.length){ el.innerHTML='<div class="empty">Aucune classe</div>'; return; }
   el.innerHTML='<table><thead><tr><th>Classe</th><th>Niveau</th><th>Effectif</th><th>Élèves</th><th></th></tr></thead><tbody>'+
     db.classes.map(c=>`<tr><td><strong>${c.nom}</strong></td><td>${c.niveau}</td><td>${c.effectif}</td><td>${db.eleves.filter(e=>e.classeId===c.id).length}</td><td><button class="btn btn-danger btn-sm" onclick="delClasse(${c.id})">✕</button></td></tr>`).join('')+'</tbody></table>';
 }
 
-/* ÉLÈVES */
-function addEleve(){
+// ==============================================================================
+// GESTION DES ÉLÈVES
+// ==============================================================================
+async function addEleve(){
   const nom=document.getElementById('el-nom').value.trim();
   const classeId=parseInt(document.getElementById('el-classe').value);
-  if(!nom||!classeId)return;
-  db.eleves.push({id:nid.el++,nom,classeId,num:document.getElementById('el-num').value.trim()});
-  document.getElementById('el-nom').value='';document.getElementById('el-num').value='';
-  save();refreshAllSelects();renderEleves();updateStats();toast('Élève ajouté ✓');
+  const num=document.getElementById('el-num').value.trim();
+  if(!nom||!classeId) return;
+
+  if(isSupabaseConnected && supabase){
+    const { data, error } = await supabase.from('eleves').insert({ nom, classe_id: classeId, num }).select().single();
+    if(error){ toast('Erreur Supabase: ' + error.message); return; }
+    db.eleves.push({ id: data.id, nom: data.nom, classeId: data.classe_id, num: data.num });
+  } else {
+    db.eleves.push({ id: nid.el++, nom, classeId, num });
+  }
+
+  document.getElementById('el-nom').value='';
+  document.getElementById('el-num').value='';
+  saveLocal();
+  refreshAllSelects();
+  renderEleves();
+  updateStats();
+  toast('Élève ajouté ✓');
 }
-function delEleve(id){db.eleves=db.eleves.filter(x=>x.id!==id);save();refreshAllSelects();renderEleves();updateStats();}
+
+async function delEleve(id){
+  if(isSupabaseConnected && supabase){
+    const { error } = await supabase.from('eleves').delete().eq('id', id);
+    if(error){ toast('Erreur Supabase: ' + error.message); return; }
+  }
+  db.eleves=db.eleves.filter(x=>x.id!==id);
+  db.notes=db.notes.filter(x=>x.eleveId!==id);
+  saveLocal();
+  refreshAllSelects();
+  renderEleves();
+  updateStats();
+  toast('Élève supprimé ✓');
+}
+
 function renderEleves(){
   const el=document.getElementById('liste-eleves');
   const fc=document.getElementById('filter-classe-el').value;
-  let arr=fc?db.eleves.filter(e=>e.classeId==fc):db.eleves;
-  if(!arr.length){el.innerHTML='<div class="empty">Aucun élève</div>';return;}
+  let arr=fc ? db.eleves.filter(e=>e.classeId==fc) : db.eleves;
+  if(!arr.length){ el.innerHTML='<div class="empty">Aucun élève</div>'; return; }
   el.innerHTML='<table><thead><tr><th>N°</th><th>Nom</th><th>Classe</th><th></th></tr></thead><tbody>'+
     arr.map(e=>`<tr><td style="color:#aaa;font-size:11px">${e.num||'—'}</td><td>${e.nom}</td><td>${getClasseNom(e.classeId)}</td><td><button class="btn btn-danger btn-sm" onclick="delEleve(${e.id})">✕</button></td></tr>`).join('')+'</tbody></table>';
 }
 
-/* COURS */
-function addCours(){
+// ==============================================================================
+// GESTION DES COURS / CHAPITRES
+// ==============================================================================
+async function addCours(){
   const titre=document.getElementById('co-titre').value.trim();
   const classeId=parseInt(document.getElementById('co-classe').value);
-  if(!titre||!classeId)return;
-  db.cours.push({id:nid.co++,titre,mat:document.getElementById('co-mat').value,classeId,debut:document.getElementById('co-debut').value,statut:document.getElementById('co-statut').value,obj:document.getElementById('co-obj').value.trim()});
-  document.getElementById('co-titre').value='';document.getElementById('co-obj').value='';
-  save();renderCours();updateStats();toast('Chapitre ajouté ✓');
+  if(!titre||!classeId) return;
+
+  const mat=document.getElementById('co-mat').value;
+  const debut=document.getElementById('co-debut').value;
+  const statut=document.getElementById('co-statut').value;
+  const obj=document.getElementById('co-obj').value.trim();
+
+  if(isSupabaseConnected && supabase){
+    const { data, error } = await supabase.from('cours').insert({ titre, mat, classe_id: classeId, debut, statut, obj }).select().single();
+    if(error){ toast('Erreur Supabase: ' + error.message); return; }
+    db.cours.push({ id: data.id, titre: data.titre, mat: data.mat, classeId: data.classe_id, debut: data.debut, statut: data.statut, obj: data.obj });
+  } else {
+    db.cours.push({ id: nid.co++, titre, mat, classeId, debut, statut, obj });
+  }
+
+  document.getElementById('co-titre').value='';
+  document.getElementById('co-obj').value='';
+  saveLocal();
+  renderCours();
+  updateStats();
+  toast('Chapitre ajouté ✓');
 }
-function delCours(id){db.cours=db.cours.filter(x=>x.id!==id);save();renderCours();updateStats();}
+
+async function delCours(id){
+  if(isSupabaseConnected && supabase){
+    const { error } = await supabase.from('cours').delete().eq('id', id);
+    if(error){ toast('Erreur Supabase: ' + error.message); return; }
+  }
+  db.cours=db.cours.filter(x=>x.id!==id);
+  saveLocal();
+  renderCours();
+  updateStats();
+}
+
 function renderCours(){
   const el=document.getElementById('liste-cours');
   const fm=document.getElementById('filter-mat-cours').value;
   const fc=document.getElementById('filter-classe-cours').value;
   const fs=document.getElementById('filter-statut-cours').value;
   let arr=db.cours;
-  if(fm)arr=arr.filter(c=>c.mat===fm);if(fc)arr=arr.filter(c=>c.classeId==fc);if(fs)arr=arr.filter(c=>c.statut===fs);
-  if(!arr.length){el.innerHTML='<div class="empty">Aucun chapitre</div>';return;}
+  if(fm) arr=arr.filter(c=>c.mat===fm);
+  if(fc) arr=arr.filter(c=>c.classeId==fc);
+  if(fs) arr=arr.filter(c=>c.statut===fs);
+  if(!arr.length){ el.innerHTML='<div class="empty">Aucun chapitre</div>'; return; }
   el.innerHTML=arr.map(c=>`<div style="border-bottom:1px solid #f0f0eb;padding:8px 0;display:flex;justify-content:space-between;gap:8px">
     <div>
       <span class="badge ${c.mat==='Biologie'?'badge-bio':'badge-geo'}">${c.mat}</span>
@@ -488,48 +1304,111 @@ function renderCours(){
   </div>`).join('');
 }
 
-/* NOTES */
-function addNote(){
+// ==============================================================================
+// GESTION DES NOTES
+// ==============================================================================
+async function addNote(){
   const titre=document.getElementById('no-titre').value.trim();
   const classeId=parseInt(document.getElementById('no-classe').value);
   const eleveId=parseInt(document.getElementById('no-eleve').value);
   const note=parseFloat(document.getElementById('no-note').value);
-  if(!titre||!classeId||!eleveId||isNaN(note))return;
+  if(!titre||!classeId||!eleveId||isNaN(note)) return;
+
+  const mat=document.getElementById('no-mat').value;
+  const date=document.getElementById('no-date').value;
   const bareme=parseFloat(document.getElementById('no-bareme').value)||20;
-  db.notes.push({id:nid.no++,titre,mat:document.getElementById('no-mat').value,classeId,eleveId,date:document.getElementById('no-date').value,bareme,note});
+
+  if(isSupabaseConnected && supabase){
+    const { data, error } = await supabase.from('notes').insert({ titre, mat, classe_id: classeId, eleve_id: eleveId, date, bareme, note }).select().single();
+    if(error){ toast('Erreur Supabase: ' + error.message); return; }
+    db.notes.push({ id: data.id, titre: data.titre, mat: data.mat, classeId: data.classe_id, eleveId: data.eleve_id, date: data.date, bareme: data.bareme, note: data.note });
+  } else {
+    db.notes.push({ id: nid.no++, titre, mat, classeId, eleveId, date, bareme, note });
+  }
+
   document.getElementById('no-note').value='';
-  save();renderNotes();updateStats();toast('Note enregistrée ✓');
+  saveLocal();
+  renderNotes();
+  updateStats();
+  toast('Note enregistrée ✓');
 }
-function delNote(id){db.notes=db.notes.filter(x=>x.id!==id);save();renderNotes();updateStats();}
+
+async function delNote(id){
+  if(isSupabaseConnected && supabase){
+    const { error } = await supabase.from('notes').delete().eq('id', id);
+    if(error){ toast('Erreur Supabase: ' + error.message); return; }
+  }
+  db.notes=db.notes.filter(x=>x.id!==id);
+  saveLocal();
+  renderNotes();
+  updateStats();
+}
+
 function renderNotes(){
   const el=document.getElementById('liste-notes');
   const fc=document.getElementById('filter-classe-note').value;
   const fm=document.getElementById('filter-mat-note').value;
   let arr=db.notes;
-  if(fc)arr=arr.filter(n=>n.classeId==fc);if(fm)arr=arr.filter(n=>n.mat===fm);
+  if(fc) arr=arr.filter(n=>n.classeId==fc);
+  if(fm) arr=arr.filter(n=>n.mat===fm);
   const moy=document.getElementById('moy-display');
-  if(arr.length){const avg=(arr.reduce((s,n)=>s+n.note/n.bareme*20,0)/arr.length).toFixed(2);moy.innerHTML=`<span style="font-size:12px;color:#666">Moyenne : <strong style="color:#0F6E56">${avg}/20</strong> (${arr.length} note${arr.length>1?'s':''})</span>`;}
-  else moy.innerHTML='';
-  if(!arr.length){el.innerHTML='<div class="empty">Aucune note</div>';return;}
+  if(arr.length){
+    const avg=(arr.reduce((s,n)=>s+n.note/n.bareme*20,0)/arr.length).toFixed(2);
+    moy.innerHTML=`<span style="font-size:12px;color:#666">Moyenne : <strong style="color:#0F6E56">${avg}/20</strong> (${arr.length} note${arr.length>1?'s':''})</span>`;
+  } else {
+    moy.innerHTML='';
+  }
+  if(!arr.length){ el.innerHTML='<div class="empty">Aucune note</div>'; return; }
   el.innerHTML='<table><thead><tr><th>Évaluation</th><th>Élève</th><th>Matière</th><th>Note</th><th></th></tr></thead><tbody>'+
     arr.map(n=>`<tr><td>${n.titre}<br><span style="font-size:10px;color:#aaa">${n.date||''} · ${getClasseNom(n.classeId)}</span></td><td>${getEleveNom(n.eleveId)}</td><td><span class="badge ${n.mat==='Biologie'?'badge-bio':'badge-geo'}">${n.mat}</span></td><td><span class="note-pill" style="${noteStyle(n.note,n.bareme)}">${n.note}/${n.bareme}</span></td><td><button class="btn btn-danger btn-sm" onclick="delNote(${n.id})">✕</button></td></tr>`).join('')+'</tbody></table>';
 }
 
-/* RESSOURCES */
-function addRessource(){
-  const titre=document.getElementById('re-titre').value.trim();if(!titre)return;
-  db.ressources.push({id:nid.re++,titre,type:document.getElementById('re-type').value,mat:document.getElementById('re-mat').value,classeId:document.getElementById('re-classe').value,desc:document.getElementById('re-desc').value.trim()});
-  document.getElementById('re-titre').value='';document.getElementById('re-desc').value='';
-  save();renderRessources();updateStats();toast('Ressource ajoutée ✓');
+// ==============================================================================
+// GESTION DES RESSOURCES PÉDAGOGIQUES
+// ==============================================================================
+async function addRessource(){
+  const titre=document.getElementById('re-titre').value.trim();
+  if(!titre) return;
+  const type=document.getElementById('re-type').value;
+  const mat=document.getElementById('re-mat').value;
+  const classeId=parseInt(document.getElementById('re-classe').value)||null;
+  const desc=document.getElementById('re-desc').value.trim();
+
+  if(isSupabaseConnected && supabase){
+    const { data, error } = await supabase.from('ressources').insert({ titre, type, mat, classe_id: classeId, desc_txt: desc }).select().single();
+    if(error){ toast('Erreur Supabase: ' + error.message); return; }
+    db.ressources.push({ id: data.id, titre: data.titre, type: data.type, mat: data.mat, classeId: data.classe_id, desc: data.desc_txt });
+  } else {
+    db.ressources.push({ id: nid.re++, titre, type, mat, classeId, desc });
+  }
+
+  document.getElementById('re-titre').value='';
+  document.getElementById('re-desc').value='';
+  saveLocal();
+  renderRessources();
+  updateStats();
+  toast('Ressource ajoutée ✓');
 }
-function delRessource(id){db.ressources=db.ressources.filter(x=>x.id!==id);save();renderRessources();updateStats();}
+
+async function delRessource(id){
+  if(isSupabaseConnected && supabase){
+    const { error } = await supabase.from('ressources').delete().eq('id', id);
+    if(error){ toast('Erreur Supabase: ' + error.message); return; }
+  }
+  db.ressources=db.ressources.filter(x=>x.id!==id);
+  saveLocal();
+  renderRessources();
+  updateStats();
+}
+
 function renderRessources(){
   const el=document.getElementById('liste-ressources');
   const fm=document.getElementById('filter-mat-res').value;
   const ft=document.getElementById('filter-type-res').value;
   let arr=db.ressources;
-  if(fm)arr=arr.filter(r=>r.mat===fm);if(ft)arr=arr.filter(r=>r.type===ft);
-  if(!arr.length){el.innerHTML='<div class="empty">Aucune ressource</div>';return;}
+  if(fm) arr=arr.filter(r=>r.mat===fm);
+  if(ft) arr=arr.filter(r=>r.type===ft);
+  if(!arr.length){ el.innerHTML='<div class="empty">Aucune ressource</div>'; return; }
   el.innerHTML=arr.map(r=>`<div style="border-bottom:1px solid #f0f0eb;padding:8px 0;display:flex;justify-content:space-between;gap:8px">
     <div>
       <span class="badge ${r.mat==='Biologie'?'badge-bio':'badge-geo'}">${r.mat}</span>
@@ -542,39 +1421,88 @@ function renderRessources(){
   </div>`).join('');
 }
 
-/* EMPLOI DU TEMPS */
-function hIdx(h){return HEURES.indexOf(h);}
-function addSlot(){
+// ==============================================================================
+// GESTION DE L'EMPLOI DU TEMPS (EDT)
+// ==============================================================================
+function hIdx(h){ return HEURES.indexOf(h); }
+
+async function addSlot(){
   const hdeb=document.getElementById('et-hdeb').value;
   const hfin=document.getElementById('et-hfin').value;
   const classe=document.getElementById('et-classe').value.trim();
   const err=document.getElementById('et-err');
-  if(hIdx(hdeb)>=hIdx(hfin)){err.textContent='Heure de fin doit être après le début.';return;}
-  if(!classe){err.textContent='Indiquer la classe.';return;}
+
+  if(hIdx(hdeb)>=hIdx(hfin)){ err.textContent='Heure de fin doit être après le début.'; return; }
+  if(!classe){ err.textContent='Indiquer la classe.'; return; }
   err.textContent='';
-  db.slots.push({id:nid.sl++,jour:document.getElementById('et-jour').value,hdeb,hfin,mat:document.getElementById('et-mat').value,classe,lecon:document.getElementById('et-lecon').value.trim(),salle:document.getElementById('et-salle').value.trim(),span:hIdx(hfin)-hIdx(hdeb)});
-  document.getElementById('et-classe').value='';document.getElementById('et-lecon').value='';document.getElementById('et-salle').value='';
-  save();renderEdt();toast('Créneau ajouté ✓');
+
+  const slotData = {
+    jour: document.getElementById('et-jour').value,
+    hdeb,
+    hfin,
+    mat: document.getElementById('et-mat').value,
+    classe,
+    lecon: document.getElementById('et-lecon').value.trim(),
+    salle: document.getElementById('et-salle').value.trim(),
+    span: hIdx(hfin)-hIdx(hdeb)
+  };
+
+  if(isSupabaseConnected && supabase){
+    const { data, error } = await supabase.from('edt_slots').insert(slotData).select().single();
+    if(error){ toast('Erreur Supabase: ' + error.message); return; }
+    db.slots.push(data);
+  } else {
+    db.slots.push({ id: nid.sl++, ...slotData });
+  }
+
+  document.getElementById('et-classe').value='';
+  document.getElementById('et-lecon').value='';
+  document.getElementById('et-salle').value='';
+  saveLocal();
+  renderEdt();
+  toast('Créneau ajouté ✓');
 }
-function delSlot(id){db.slots=db.slots.filter(s=>s.id!==id);save();renderEdt();}
-function clearEdt(){if(!confirm('Effacer tout ?'))return;db.slots=[];save();renderEdt();}
+
+async function delSlot(id){
+  if(isSupabaseConnected && supabase){
+    const { error } = await supabase.from('edt_slots').delete().eq('id', id);
+    if(error){ toast('Erreur Supabase: ' + error.message); return; }
+  }
+  db.slots=db.slots.filter(s=>s.id!==id);
+  saveLocal();
+  renderEdt();
+}
+
+async function clearEdt(){
+  if(!confirm('Effacer tout l\'emploi du temps ?')) return;
+  if(isSupabaseConnected && supabase){
+    await supabase.from('edt_slots').delete().neq('id', 0);
+  }
+  db.slots=[];
+  saveLocal();
+  renderEdt();
+  toast('EDT réinitialisé');
+}
+
 function renderEdt(){
   const body=document.getElementById('edt-body');
+  if(!body) return;
   const occ={};
   db.slots.forEach(s=>{
-    const ji=JOURS.indexOf(s.jour),hi=hIdx(s.hdeb);
-    for(let r=hi;r<hi+s.span;r++){
-      if(!occ[r])occ[r]={};
-      occ[r][ji]=r===hi?{slot:s,first:true}:{skip:true};
+    const ji=JOURS.indexOf(s.jour), hi=hIdx(s.hdeb);
+    for(let r=hi; r<hi+s.span; r++){
+      if(!occ[r]) occ[r]={};
+      occ[r][ji] = r===hi ? { slot: s, first: true } : { skip: true };
     }
   });
+
   let html='';
-  for(let r=0;r<HEURES.length-1;r++){
+  for(let r=0; r<HEURES.length-1; r++){
     html+=`<tr><td class="heure">${HEURES[r]}<br><span style="font-size:10px;opacity:.6">→${HEURES[r+1]}</span></td>`;
-    for(let j=0;j<6;j++){
-      const cell=occ[r]?occ[r][j]:null;
-      if(cell&&cell.skip)continue;
-      if(cell&&cell.first){
+    for(let j=0; j<6; j++){
+      const cell=occ[r] ? occ[r][j] : null;
+      if(cell && cell.skip) continue;
+      if(cell && cell.first){
         const s=cell.slot;
         html+=`<td rowspan="${s.span}"><div class="slot ${s.mat==='Biologie'?'slot-bio':'slot-geo'}" style="min-height:${s.span*44}px">
           <button class="del-btn" onclick="delSlot(${s.id})">✕</button>
@@ -582,31 +1510,52 @@ function renderEdt(){
           ${s.lecon?`<br><span style="font-size:10px;opacity:.85">${s.lecon}</span>`:''}
           ${s.salle?`<br><span style="opacity:.7">${s.salle}</span>`:''}
         </div></td>`;
-      }else html+=`<td><span class="slot-empty"></span></td>`;
+      } else {
+        html+=`<td><span class="slot-empty"></span></td>`;
+      }
     }
     html+='</tr>';
   }
   body.innerHTML=html;
 }
 
-/* ALERTES & RAPPELS */
-function sauvegarderEmail(){
+// ==============================================================================
+// GESTION DES RAPPELS ET ALERTES (EMAIL & NAVIGATEUR)
+// ==============================================================================
+async function sauvegarderEmail(){
   cfg.email=document.getElementById('email-rappel').value.trim();
-  save();toast('Email sauvegardé ✓');
+  saveLocal();
+  if(isSupabaseConnected && supabase){
+    await supabase.from('app_config').upsert({ id: 'general', email: cfg.email, updated_at: new Date().toISOString() });
+  }
+  toast('Email sauvegardé ✓');
 }
 
-function sauvegarderEmailJS(){
+async function sauvegarderEmailJS(){
   cfg.ejsService=document.getElementById('ejs-service').value.trim();
   cfg.ejsTemplate=document.getElementById('ejs-template').value.trim();
   cfg.ejsPubKey=document.getElementById('ejs-pubkey').value.trim();
-  if(cfg.ejsPubKey){try{emailjs.init(cfg.ejsPubKey);}catch(e){}}
-  save();
-  document.getElementById('ejs-status').textContent='✓ Configuration sauvegardée ! Les emails seront envoyés automatiquement.';
+  if(cfg.ejsPubKey && window.emailjs){ try{ emailjs.init(cfg.ejsPubKey); }catch(e){} }
+  saveLocal();
+
+  if(isSupabaseConnected && supabase){
+    await supabase.from('app_config').upsert({
+      id: 'general',
+      email: cfg.email,
+      ejs_service: cfg.ejsService,
+      ejs_template: cfg.ejsTemplate,
+      ejs_pub_key: cfg.ejsPubKey,
+      updated_at: new Date().toISOString()
+    });
+  }
+
+  document.getElementById('ejs-status').textContent='✓ Configuration EmailJS sauvegardée !';
   toast('Configuration EmailJS sauvegardée ✓');
 }
 
 function getCoursDemain(){
-  const demain=new Date();demain.setDate(demain.getDate()+1);
+  const demain=new Date();
+  demain.setDate(demain.getDate()+1);
   const jourDemain=JOURS_FR[demain.getDay()];
   return db.slots.filter(s=>s.jour===jourDemain);
 }
@@ -614,8 +1563,9 @@ function getCoursDemain(){
 function renderDemain(){
   const el=document.getElementById('demain-liste');
   const slots=getCoursDemain();
-  if(!slots.length){el.innerHTML='<div class="empty">Aucun cours prévu pour demain</div>';return;}
-  const demain=new Date();demain.setDate(demain.getDate()+1);
+  if(!slots.length){ el.innerHTML='<div class="empty">Aucun cours prévu pour demain</div>'; return; }
+  const demain=new Date();
+  demain.setDate(demain.getDate()+1);
   const dateStr=demain.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
   el.innerHTML=`<p style="font-size:12px;color:#888;margin-bottom:8px">Cours du ${dateStr} :</p>`+
     slots.map(s=>`<div style="border:1px solid #e5e5e0;border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start">
@@ -630,33 +1580,35 @@ function renderDemain(){
 
 function renderHistorique(){
   const el=document.getElementById('historique-rappels');
-  if(!db.rappels||!db.rappels.length){el.innerHTML='<div class="empty">Aucun rappel envoyé</div>';return;}
+  if(!db.rappels||!db.rappels.length){ el.innerHTML='<div class="empty">Aucun rappel envoyé</div>'; return; }
   el.innerHTML='<table><thead><tr><th>Date envoi</th><th>Cours</th><th>Canal</th><th>Statut</th></tr></thead><tbody>'+
     [...db.rappels].reverse().slice(0,20).map(r=>`<tr><td style="font-size:11px">${r.date}</td><td>${r.mat} · ${r.classe}${r.lecon?' · '+r.lecon:''}</td><td>${r.canal}</td><td style="color:${r.ok?'#0F6E56':'#c0392b'}">${r.ok?'✓ Envoyé':'✗ Échec'}</td></tr>`).join('')+'</tbody></table>';
 }
 
 async function envoyerEmail(slot){
-  if(!cfg.ejsService||!cfg.ejsTemplate||!cfg.ejsPubKey)return false;
-  const demain=new Date();demain.setDate(demain.getDate()+1);
+  if(!cfg.ejsService||!cfg.ejsTemplate||!cfg.ejsPubKey||!window.emailjs) return false;
+  const demain=new Date();
+  demain.setDate(demain.getDate()+1);
   const dateStr=demain.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
   try{
-    await emailjs.send(cfg.ejsService,cfg.ejsTemplate,{
-      to_email:cfg.email,
-      classe:slot.classe,
-      matiere:slot.mat,
-      lecon:slot.lecon||'(non précisée)',
-      horaire:`${slot.hdeb} – ${slot.hfin}`,
-      salle:slot.salle||'',
-      date_cours:dateStr
+    await emailjs.send(cfg.ejsService, cfg.ejsTemplate, {
+      to_email: cfg.email,
+      classe: slot.classe,
+      matiere: slot.mat,
+      lecon: slot.lecon||'(non précisée)',
+      horaire: `${slot.hdeb} – ${slot.hfin}`,
+      salle: slot.salle||'',
+      date_cours: dateStr
     });
     return true;
-  }catch(e){console.error(e);return false;}
+  }catch(e){
+    console.error(e);
+    return false;
+  }
 }
 
 function envoyerNotifNavigateur(slot){
-  if(Notification.permission!=='granted')return false;
-  const demain=new Date();demain.setDate(demain.getDate()+1);
-  const dateStr=demain.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  if(Notification.permission!=='granted') return false;
   new Notification(`🔔 Rappel cours demain — ${slot.classe}`,{
     body:`${slot.mat} · ${slot.hdeb}–${slot.hfin}${slot.lecon?' · '+slot.lecon:''}`,
     icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%230F6E56" rx="20"/><text y=".9em" font-size="80">📚</text></svg>'
@@ -666,94 +1618,137 @@ function envoyerNotifNavigateur(slot){
 
 async function verifierRappels(){
   const slots=getCoursDemain();
-  if(!slots.length){toast('Aucun cours demain — pas de rappel à envoyer.');return;}
-  let nbEmail=0,nbNotif=0;
+  if(!slots.length){ toast('Aucun cours demain — pas de rappel à envoyer.'); return; }
+  let nbEmail=0, nbNotif=0;
+
   for(const slot of slots){
     const dateEnvoi=new Date().toLocaleString('fr-FR');
     const okEmail=await envoyerEmail(slot);
     const okNotif=envoyerNotifNavigateur(slot);
-    if(okEmail)nbEmail++;
-    if(okNotif)nbNotif++;
-    if(!db.rappels)db.rappels=[];
-    if(okEmail)db.rappels.push({date:dateEnvoi,mat:slot.mat,classe:slot.classe,lecon:slot.lecon,canal:'Email',ok:true});
-    if(okNotif)db.rappels.push({date:dateEnvoi,mat:slot.mat,classe:slot.classe,lecon:slot.lecon,canal:'Navigateur',ok:true});
-    if(!okEmail&&!okNotif)db.rappels.push({date:dateEnvoi,mat:slot.mat,classe:slot.classe,lecon:slot.lecon,canal:'—',ok:false});
+    if(okEmail) nbEmail++;
+    if(okNotif) nbNotif++;
+
+    const rapItem = {
+      date: dateEnvoi,
+      mat: slot.mat,
+      classe: slot.classe,
+      lecon: slot.lecon||'',
+      canal: okEmail ? 'Email' : (okNotif ? 'Navigateur' : '—'),
+      ok: Boolean(okEmail || okNotif)
+    };
+
+    db.rappels.push(rapItem);
+
+    if(isSupabaseConnected && supabase){
+      await supabase.from('rappels').insert(rapItem);
+    }
   }
-  save();renderHistorique();
+
+  saveLocal();
+  renderHistorique();
   let msg=`${slots.length} rappel(s) traité(s)`;
-  if(nbEmail)msg+=` · ${nbEmail} email(s) envoyé(s)`;
-  if(nbNotif)msg+=` · ${nbNotif} notification(s)`;
-  toast(msg,4000);
+  if(nbEmail) msg+=` · ${nbEmail} email(s) envoyé(s)`;
+  if(nbNotif) msg+=` · ${nbNotif} notification(s)`;
+  toast(msg, 4000);
 }
 
 function activerNotifs(){
-  if(!('Notification'in window)){toast('Notifications non supportées par ce navigateur.');return;}
+  if(!('Notification'in window)){ toast('Notifications non supportées par ce navigateur.'); return; }
   Notification.requestPermission().then(p=>{
     updateNotifStatus();
-    if(p==='granted')toast('Notifications activées ✓');
+    if(p==='granted') toast('Notifications activées ✓');
     else toast('Notifications refusées. Autorise-les dans les paramètres du navigateur.');
   });
 }
 
 function updateNotifStatus(){
-  const el=document.getElementById('notif-status');if(!el)return;
+  const el=document.getElementById('notif-status');
+  if(!el) return;
   const btn=document.getElementById('notif-btn');
-  if(!('Notification'in window)){el.className='alert-box alert-warn';el.textContent='Ton navigateur ne supporte pas les notifications.';}
-  else if(Notification.permission==='granted'){
-    el.className='alert-box alert-success';el.textContent='✓ Notifications activées — tu recevras les rappels dans le navigateur.';
-    if(btn)btn.textContent='✓ Alertes activées';
-  }else if(Notification.permission==='denied'){
-    el.className='alert-box alert-warn';el.textContent='Notifications bloquées. Va dans les paramètres du navigateur pour les autoriser.';
-  }else{
-    el.className='alert-box alert-warn';el.textContent='Notifications non activées — clique sur le bouton pour les activer.';
+  if(!('Notification'in window)){
+    el.className='alert-box alert-warn';
+    el.textContent='Ton navigateur ne supporte pas les notifications.';
+  } else if(Notification.permission==='granted'){
+    el.className='alert-box alert-success';
+    el.textContent='✓ Notifications activées — tu recevras les rappels dans le navigateur.';
+    if(btn) btn.textContent='✓ Alertes activées';
+  } else if(Notification.permission==='denied'){
+    el.className='alert-box alert-warn';
+    el.textContent='Notifications bloquées. Va dans les paramètres du navigateur pour les autoriser.';
+  } else {
+    el.className='alert-box alert-warn';
+    el.textContent='Notifications non activées — clique sur le bouton pour les activer.';
   }
 }
 
-/* Vérification automatique quotidienne à 20h */
 function planifierVerificationQuotidienne(){
   const maintenant=new Date();
   const prochaine=new Date();
   prochaine.setHours(20,0,0,0);
-  if(prochaine<=maintenant)prochaine.setDate(prochaine.getDate()+1);
+  if(prochaine<=maintenant) prochaine.setDate(prochaine.getDate()+1);
   const delai=prochaine-maintenant;
   setTimeout(()=>{
     verifierRappels();
-    setInterval(verifierRappels,24*60*60*1000);
-  },delai);
+    setInterval(verifierRappels, 24*60*60*1000);
+  }, delai);
 }
 
-/* ACCUEIL */
+// ==============================================================================
+// STATISTIQUES & ACCUEIL
+// ==============================================================================
 function updateStats(){
   document.getElementById('s-classes').textContent=db.classes.length;
   document.getElementById('s-eleves').textContent=db.eleves.length;
   document.getElementById('s-cours').textContent=db.cours.length;
   document.getElementById('s-ressources').textContent=db.ressources.length;
 }
+
 function updateAccueil(){
   updateStats();
   const today=JOURS_FR[new Date().getDay()];
   const demain=JOURS_FR[new Date(Date.now()+86400000).getDay()];
   const todaySlots=db.slots.filter(s=>s.jour===today);
   const demainSlots=db.slots.filter(s=>s.jour===demain);
+
   const te=document.getElementById('today-edt');
-  if(!todaySlots.length)te.innerHTML=`<div class="empty">Aucun cours aujourd'hui (${today})</div>`;
+  if(!todaySlots.length) te.innerHTML=`<div class="empty">Aucun cours aujourd'hui (${today})</div>`;
   else te.innerHTML='<table><tbody>'+todaySlots.map(s=>`<tr><td style="color:#666;font-size:12px">${s.hdeb}–${s.hfin}</td><td><span class="badge ${s.mat==='Biologie'?'badge-bio':'badge-geo'}">${s.mat}</span></td><td><strong>${s.classe}</strong></td><td style="font-size:12px;color:#666">${s.lecon||''}</td></tr>`).join('')+'</tbody></table>';
+
   const rd=document.getElementById('rappel-demain');
   if(demainSlots.length){
     rd.innerHTML=`<div class="alert-box alert-info" style="margin-bottom:12px">🔔 <strong>Rappel :</strong> Tu as ${demainSlots.length} cours demain (${demain}) — ${demainSlots.map(s=>`${s.mat} ${s.classe}`).join(', ')}</div>`;
-  }else rd.innerHTML='';
+  } else {
+    rd.innerHTML='';
+  }
+
   const rn=document.getElementById('recent-notes');
-  if(!db.notes.length)rn.innerHTML='<div class="empty">Aucune note</div>';
-  else{const arr=[...db.notes].reverse().slice(0,4);rn.innerHTML='<table><tbody>'+arr.map(n=>`<tr><td>${n.titre}</td><td>${getEleveNom(n.eleveId)}</td><td><span class="note-pill" style="${noteStyle(n.note,n.bareme)}">${n.note}/${n.bareme}</span></td></tr>`).join('')+'</tbody></table>';}
+  if(!db.notes.length) rn.innerHTML='<div class="empty">Aucune note</div>';
+  else {
+    const arr=[...db.notes].reverse().slice(0,4);
+    rn.innerHTML='<table><tbody>'+arr.map(n=>`<tr><td>${n.titre}</td><td>${getEleveNom(n.eleveId)}</td><td><span class="note-pill" style="${noteStyle(n.note,n.bareme)}">${n.note}/${n.bareme}</span></td></tr>`).join('')+'</tbody></table>';
+  }
+
   const rc=document.getElementById('recent-cours');
-  if(!db.cours.length)rc.innerHTML='<div class="empty">Aucun chapitre</div>';
-  else{const arr=[...db.cours].reverse().slice(0,4);rc.innerHTML='<table><tbody>'+arr.map(c=>`<tr><td><span class="badge ${c.mat==='Biologie'?'badge-bio':'badge-geo'}">${c.mat}</span></td><td>${c.titre}</td><td>${getClasseNom(c.classeId)}</td></tr>`).join('')+'</tbody></table>';}
+  if(!db.cours.length) rc.innerHTML='<div class="empty">Aucun chapitre</div>';
+  else {
+    const arr=[...db.cours].reverse().slice(0,4);
+    rc.innerHTML='<table><tbody>'+arr.map(c=>`<tr><td><span class="badge ${c.mat==='Biologie'?'badge-bio':'badge-geo'}">${c.mat}</span></td><td>${c.titre}</td><td>${getClasseNom(c.classeId)}</td></tr>`).join('')+'</tbody></table>';
+  }
 }
 
-/* Date header */
+// ==============================================================================
+// INITIALISATION DE L'APPLICATION
+// ==============================================================================
 document.getElementById('date-now').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
-load();refreshAllSelects();renderClasses();renderEleves();renderCours();renderNotes();renderRessources();renderEdt();updateAccueil();updateNotifStatus();planifierVerificationQuotidienne();
+// 1. Chargement instantané depuis le cache local (aucune latence au démarrage)
+loadLocal();
+refreshAllViews();
+updateNotifStatus();
+planifierVerificationQuotidienne();
+
+// 2. Initialisation asynchrone de Supabase
+initSupabase();
 </script>
 </body>
 </html>

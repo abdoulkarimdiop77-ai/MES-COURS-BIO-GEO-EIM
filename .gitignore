@@ -1,0 +1,20 @@
+# Fichiers d'environnement locaux
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Déploiement Vercel
+.vercel
+
+# Dépendances Node.js (si npm utilisé ultérieurement)
+node_modules/
+npm-debug.log*
+
+# Fichiers système et éditeurs
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
