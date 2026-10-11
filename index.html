@@ -6,9 +6,17 @@
 <title>Gestion des Cours — Prof. Karim DIOP</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0F6E56">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" onerror="console.warn('XLSX non chargé — export Excel désactivé')"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="console.warn('Supabase non chargé — mode local actif')"></script>
+<script>
+// Chargement sécurisé de supabase-config.js
+try {
+  const _sc = document.createElement('script');
+  _sc.src = 'supabase-config.js';
+  document.head.appendChild(_sc);
+} catch(e) {}
+if (!window.SUPABASE_CONFIG) window.SUPABASE_CONFIG = { url: '', anonKey: '' };
+</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;background:#f5f5f0;color:#1a1a1a;min-height:100vh}
@@ -775,8 +783,10 @@ table.edt td.heure{background:#f5f5f0;text-align:center;font-size:9px;color:#888
 
 </div><!-- /main -->
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" onerror="console.warn('EmailJS non chargé')"></script>
 <script>
+// Stub EmailJS si non chargé
+if (typeof emailjs === 'undefined') { window.emailjs = { init: function(){}, send: function(){ return Promise.reject('EmailJS non disponible'); } }; }
 const JOURS=['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
 const JOURS_FR=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
 const HEURES=['07h00','08h00','09h00','10h00','11h00','12h00','13h00','14h00','15h00','16h00','17h00','18h00'];
@@ -2008,9 +2018,22 @@ function updateAccueil(){
 }
 
 /* ===== INIT ===== */
-document.getElementById('date-now').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-load();refreshAllSelects();renderEcoles();renderClasses();renderEleves();renderCours();renderNotes();renderDevoirs();renderRessources();renderEdt();updateAccueil();updateNotifStatus();planifierRappel();checkDevoirParam();
-initSupabaseClient();
+try { document.getElementById('date-now').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}); } catch(e){}
+try { load(); } catch(e){ console.error('load error:',e); }
+try { refreshAllSelects(); } catch(e){ console.error('refreshAllSelects error:',e); }
+try { renderEcoles(); } catch(e){ console.error('renderEcoles error:',e); }
+try { renderClasses(); } catch(e){ console.error('renderClasses error:',e); }
+try { renderEleves(); } catch(e){ console.error('renderEleves error:',e); }
+try { renderCours(); } catch(e){ console.error('renderCours error:',e); }
+try { renderNotes(); } catch(e){ console.error('renderNotes error:',e); }
+try { renderDevoirs(); } catch(e){ console.error('renderDevoirs error:',e); }
+try { renderRessources(); } catch(e){ console.error('renderRessources error:',e); }
+try { renderEdt(); } catch(e){ console.error('renderEdt error:',e); }
+try { updateAccueil(); } catch(e){ console.error('updateAccueil error:',e); }
+try { updateNotifStatus(); } catch(e){ console.error('updateNotifStatus error:',e); }
+try { planifierRappel(); } catch(e){ console.error('planifierRappel error:',e); }
+try { checkDevoirParam(); } catch(e){ console.error('checkDevoirParam error:',e); }
+try { initSupabaseClient(); } catch(e){ console.error('initSupabase error:',e); }
 </script>
 </body>
 </html>

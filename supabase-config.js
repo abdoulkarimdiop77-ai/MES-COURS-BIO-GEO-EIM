@@ -11,6 +11,7 @@ window.SUPABASE_CONFIG = {
   // URL de votre projet Supabase
   url: 'https://ayjwqnpibquuiwprrklz.supabase.co',
 
-  // Clé publique d'API
+  // Clé publique d'API (Publishable key — nouveau format Supabase)
   anonKey: 'sb_publishable_E0IEzyhI-Kl73gwceVChcQ_WCYgiuHT'
 };
+
