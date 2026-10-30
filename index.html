@@ -452,9 +452,12 @@ body.dark .kpi{background:#16213e;border-color:#0f3460}
 :root{--hh:68px;--sbw:246px}
 body:not(.dark){background:var(--pagebg,#0B24D6) fixed!important;background-color:var(--tint,#0B24D6)!important;min-height:100vh}
 body:not(.dark) .breadcrumb{background:rgba(255,255,255,.92)}
-body:not(.dark) .main>.section>*:not(.card):not(.dash-banner):not(.dash-kpis):not(.dash-grid):not(table):not(.empty) {color:#fff}
-body:not(.dark) .main>.section>div:not(.card)>strong,body:not(.dark) .main>.section>div:not(.card)>div>strong,body:not(.dark) .main>.section>div:not(.card)>span{color:#fff!important}
-body:not(.dark) .main>.section>div:not(.card)>span[style*="#888"]{color:rgba(255,255,255,.7)!important}
+@media(max-width:700px){#btn-retour:not([style*="none"])~.h-logo .h-txt{display:none}#btn-retour{padding:6px 9px}}
+@media(max-width:700px){#parametres>div:first-child{grid-template-columns:minmax(0,1fr)!important}#parametres .card{min-width:0}#param-menu{display:flex;flex-wrap:wrap;gap:4px}#param-menu .param-menu-btn{width:auto;margin:0}}
+body:not(.dark) .main>.section>div:first-child:not(.card):not(.alert-box)>strong,body:not(.dark) .main>.section>div:first-child:not(.card):not(.alert-box)>div>strong,body:not(.dark) .main>.section>div:first-child:not(.card):not(.alert-box)>span,body:not(.dark) .main>.section>div:not(.card):not(.alert-box)>strong:first-child{color:#fff!important}
+body:not(.dark) .main>.section>div:first-child:not(.card):not(.alert-box)>span[style*="#888"],body:not(.dark) .main>.section>div:first-child:not(.card):not(.alert-box)>div>span[style*="#888"]{color:rgba(255,255,255,.7)!important}
+body:not(.dark) .section table.notes-table,body:not(.dark) .section table.notes-table tbody tr{background:#fff}
+body:not(.dark) .section .alert-box,body:not(.dark) .section .alert-box *{color:inherit}
 body:not(.dark) .section .empty,body:not(.dark) .main>.section>.empty{color:rgba(255,255,255,.7)}
 body:not(.dark) .section .card .empty{color:#9aa7c2}
 /* En-tête */
@@ -977,7 +980,6 @@ body.dark .dc-d{color:#cfe0ff}
     <button data-r="p" onclick="showTab('edt-global')">🗓️ EDT</button>
     <button data-r="p" onclick="showTab('alertes')">🔔 Alertes</button>
     <button data-r="p" onclick="showTab('messagerie')">💬 Messagerie<span id="nav-chat-badge" class="badge-notif"></span></button>
-    <button data-r="p" class="nav-prop" onclick="menuAller('propositions')">💡 Propositions<span id="nav-prop-badge" class="badge-notif"></span></button>
     <button data-r="p" onclick="showTab('parametres')">⚙️ Paramètres</button>
     <button id="nav-admin" data-r="a" onclick="showTab('admin-abo')">💼 Abonnements</button>
     <button id="nav-admin-msg" data-r="a" onclick="showTab('admin-msg')">📨 Messages<span id="nav-msg-badge" class="badge-notif"></span></button>
